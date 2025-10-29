@@ -1,12 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useMatches } from "../context/MatchContext";
 
 function MatchChat({ match, onSendMessage }) {
   const { user } = useAuth();
+  const { refreshMessages } = useMatches();
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -15,6 +19,35 @@ function MatchChat({ match, onSendMessage }) {
   useEffect(() => {
     scrollToBottom();
   }, [match?.messages]);
+
+  // Polling de mensajes SOLO cuando no estés escribiendo
+  useEffect(() => {
+    if (!match?._id) return;
+
+    const interval = setInterval(() => {
+      // Solo refrescar si NO estás escribiendo y la pestaña está visible
+      if (!isTyping && !document.hidden) {
+        refreshMessages(match._id);
+      }
+    }, 3000); // Cada 3 segundos
+
+    return () => clearInterval(interval);
+  }, [match?._id, isTyping]);
+
+  const handleMessageChange = (e) => {
+    setMessage(e.target.value);
+    setIsTyping(true);
+
+    // Resetear el timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Después de 2 segundos sin escribir, marcar como "no escribiendo"
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+    }, 2000);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,7 +164,7 @@ function MatchChat({ match, onSendMessage }) {
         <div className="flex gap-3">
           <textarea
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={handleMessageChange}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

@@ -31,20 +31,6 @@ function MatchDetailPage() {
     }
   }, [id]);
 
-  // Polling: Recargar match cada 5 segundos para actualizar mensajes
-  useEffect(() => {
-    if (!id) return;
-
-    const interval = setInterval(() => {
-      // Solo recargar si la pestaña está visible
-      if (!document.hidden) {
-        loadMatch();
-      }
-    }, 5000); // 5 segundos
-
-    return () => clearInterval(interval);
-  }, [id]);
-
   useEffect(() => {
     if (currentMatch?.meetingDetails) {
       setMeetingForm({

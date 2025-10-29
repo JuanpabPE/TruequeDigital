@@ -103,6 +103,21 @@ export function MatchProvider({ children }) {
     }
   };
 
+  // Refrescar mensajes silenciosamente (sin loading)
+  const refreshMessages = async (id) => {
+    try {
+      const res = await getMatchByIdRequest(id);
+      // Solo actualizar si hay cambios en los mensajes
+      if (res.data.messages.length !== currentMatch?.messages?.length) {
+        setCurrentMatch(res.data);
+      }
+      return res.data;
+    } catch (error) {
+      // Silencioso - no mostrar error al usuario
+      console.error("Error al refrescar mensajes:", error);
+    }
+  };
+
   // Aceptar match
   const acceptMatch = async (id) => {
     try {
@@ -294,6 +309,7 @@ export function MatchProvider({ children }) {
         getSentMatches,
         getReceivedMatches,
         getMatchById,
+        refreshMessages,
         acceptMatch,
         rejectMatch,
         cancelMatch,
