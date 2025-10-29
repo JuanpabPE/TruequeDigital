@@ -115,7 +115,10 @@ function MatchChat({ match, onSendMessage }) {
         ) : (
           <>
             {match.messages.map((msg, index) => {
-              const isOwnMessage = msg.sender._id === user.id;
+              // Comparación robusta: convertir ambos a string y comparar
+              const senderId = msg.sender?._id?.toString() || msg.sender?.toString();
+              const userId = user?.id?.toString() || user?._id?.toString();
+              const isOwnMessage = senderId === userId;
 
               return (
                 <div
