@@ -25,6 +25,18 @@ function MatchesPage() {
     loadMatches();
   }, []);
 
+  // Polling: Recargar matches cada 10 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Solo recargar si la pestaña está visible
+      if (!document.hidden) {
+        loadMatches();
+      }
+    }, 10000); // 10 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
   const loadMatches = async () => {
     await Promise.all([getSentMatches(), getReceivedMatches()]);
   };

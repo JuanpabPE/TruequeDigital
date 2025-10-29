@@ -31,6 +31,20 @@ function MatchDetailPage() {
     }
   }, [id]);
 
+  // Polling: Recargar match cada 5 segundos para actualizar mensajes
+  useEffect(() => {
+    if (!id) return;
+
+    const interval = setInterval(() => {
+      // Solo recargar si la pestaña está visible
+      if (!document.hidden) {
+        loadMatch();
+      }
+    }, 5000); // 5 segundos
+
+    return () => clearInterval(interval);
+  }, [id]);
+
   useEffect(() => {
     if (currentMatch?.meetingDetails) {
       setMeetingForm({
@@ -344,7 +358,7 @@ function MatchDetailPage() {
                       onChange={(e) =>
                         setMeetingForm({ ...meetingForm, date: e.target.value })
                       }
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                     />
                   </div>
 
