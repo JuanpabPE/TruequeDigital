@@ -626,11 +626,15 @@ export const deleteMatch = async (req, res) => {
   try {
     const { id } = req.params;
 
+    console.log(`[DELETE MATCH] Usuario ${req.user.id} intentando eliminar match ${id}`);
+
     const match = await Match.findById(id);
 
     if (!match) {
       return res.status(404).json({ message: "Match no encontrado" });
     }
+
+    console.log(`[DELETE MATCH] Match encontrado - Requester: ${match.requester}, RequestedUser: ${match.requestedUser}, Status: ${match.status}`);
 
     // Verificar que el usuario sea parte del match
     const isParticipant =
@@ -638,10 +642,13 @@ export const deleteMatch = async (req, res) => {
       match.requestedUser.toString() === req.user.id;
 
     if (!isParticipant) {
+      console.log(`[DELETE MATCH] Usuario ${req.user.id} NO es participante`);
       return res
         .status(403)
         .json({ message: "No tienes permiso para eliminar este match" });
     }
+
+    console.log(`[DELETE MATCH] Usuario ${req.user.id} es participante válido`);
 
     // Solo se pueden eliminar matches que no están activos
     if (match.status === "pending" || match.status === "accepted") {
@@ -653,6 +660,8 @@ export const deleteMatch = async (req, res) => {
 
     // Eliminar el match
     await Match.findByIdAndDelete(id);
+
+    console.log(`[DELETE MATCH] Match ${id} eliminado exitosamente por usuario ${req.user.id}`);
 
     res.json({ message: "Match eliminado exitosamente" });
   } catch (error) {

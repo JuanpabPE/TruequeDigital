@@ -311,14 +311,13 @@ export function MatchProvider({ children }) {
   // Eliminar match
   const deleteMatch = async (matchId) => {
     try {
-      setLoading(true);
       setErrors([]);
       await deleteMatchRequest(matchId);
-      // Eliminar de las listas
-      setSentMatches((prev) => prev.filter((match) => match._id !== matchId));
-      setReceivedMatches((prev) =>
-        prev.filter((match) => match._id !== matchId)
-      );
+      
+      // Recargar matches desde el servidor para asegurar sincronización
+      // En lugar de solo filtrar el estado local
+      await Promise.all([getSentMatches(), getReceivedMatches()]);
+      
       // Si es el match actual, limpiarlo
       if (currentMatch?._id === matchId) {
         setCurrentMatch(null);
@@ -332,8 +331,6 @@ export function MatchProvider({ children }) {
           : ["Error al eliminar match"]
       );
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
