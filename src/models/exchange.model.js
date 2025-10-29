@@ -87,8 +87,14 @@ const exchangeSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["available", "in-progress", "completed", "cancelled"],
-      default: "available",
+      enum: [
+        "disponible",
+        "pausado",
+        "en-progreso",
+        "intercambiado",
+        "cancelado",
+      ],
+      default: "disponible",
     },
     views: {
       type: Number,
