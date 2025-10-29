@@ -29,87 +29,93 @@ function App() {
           <MatchProvider>
             <TaskProvider>
               <BrowserRouter>
-              <Routes>
-                {/* Ruta pública - Landing Page sin navbar del sistema */}
-                <Route path="/" element={<LandingPage />} />
+                <Routes>
+                  {/* Ruta pública - Landing Page sin navbar del sistema */}
+                  <Route path="/" element={<LandingPage />} />
 
-                {/* Rutas de autenticación */}
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+                  {/* Rutas de autenticación */}
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
 
-                {/* Ruta pública - Planes */}
-                <Route path="/plans" element={<PlansPage />} />
+                  {/* Ruta pública - Planes */}
+                  <Route path="/plans" element={<PlansPage />} />
 
-                {/* Rutas protegidas - Dashboard del sistema */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/membership" element={<MembershipDashboard />} />
+                  {/* Rutas protegidas - Dashboard del sistema */}
+                  <Route element={<ProtectedRoute />}>
+                    <Route
+                      path="/membership"
+                      element={<MembershipDashboard />}
+                    />
 
-                  {/* Rutas de Trueques */}
-                  <Route path="/exchanges" element={<ExchangesListPage />} />
-                  <Route path="/exchanges/:id" element={<ExchangeDetailPage />} />
-                  <Route
-                    path="/create-exchange"
-                    element={<CreateExchangePage />}
-                  />
-                  <Route path="/my-exchanges" element={<MyExchangesPage />} />
+                    {/* Rutas de Trueques */}
+                    <Route path="/exchanges" element={<ExchangesListPage />} />
+                    <Route
+                      path="/exchanges/:id"
+                      element={<ExchangeDetailPage />}
+                    />
+                    <Route
+                      path="/create-exchange"
+                      element={<CreateExchangePage />}
+                    />
+                    <Route path="/my-exchanges" element={<MyExchangesPage />} />
 
-                  {/* Rutas de Matches */}
-                  <Route path="/matches" element={<MatchesPage />} />
-                  <Route path="/matches/:id" element={<MatchDetailPage />} />
+                    {/* Rutas de Matches */}
+                    <Route path="/matches" element={<MatchesPage />} />
+                    <Route path="/matches/:id" element={<MatchDetailPage />} />
 
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <main className="container mx-auto px-10">
-                        <Navbar />
-                        <TasksPage />
-                      </main>
-                    }
-                  />
-                  <Route
-                    path="/tasks"
-                    element={
-                      <main className="container mx-auto px-10">
-                        <Navbar />
-                        <TasksPage />
-                      </main>
-                    }
-                  />
-                  <Route
-                    path="/add-task"
-                    element={
-                      <main className="container mx-auto px-10">
-                        <Navbar />
-                        <TaskFormPage />
-                      </main>
-                    }
-                  />
-                  <Route
-                    path="/tasks/:id"
-                    element={
-                      <main className="container mx-auto px-10">
-                        <Navbar />
-                        <TaskFormPage />
-                      </main>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <main className="container mx-auto px-10">
-                        <Navbar />
-                        <ProfilePage />
-                      </main>
-                    }
-                  />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </TaskProvider>
-        </MatchProvider>
-      </ExchangesProvider>
-    </MembershipProvider>
-  </AuthProvider>
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <main className="container mx-auto px-10">
+                          <Navbar />
+                          <TasksPage />
+                        </main>
+                      }
+                    />
+                    <Route
+                      path="/tasks"
+                      element={
+                        <main className="container mx-auto px-10">
+                          <Navbar />
+                          <TasksPage />
+                        </main>
+                      }
+                    />
+                    <Route
+                      path="/add-task"
+                      element={
+                        <main className="container mx-auto px-10">
+                          <Navbar />
+                          <TaskFormPage />
+                        </main>
+                      }
+                    />
+                    <Route
+                      path="/tasks/:id"
+                      element={
+                        <main className="container mx-auto px-10">
+                          <Navbar />
+                          <TaskFormPage />
+                        </main>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <main className="container mx-auto px-10">
+                          <Navbar />
+                          <ProfilePage />
+                        </main>
+                      }
+                    />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </TaskProvider>
+          </MatchProvider>
+        </ExchangesProvider>
+      </MembershipProvider>
+    </AuthProvider>
   );
 }
 

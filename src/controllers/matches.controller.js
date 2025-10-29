@@ -151,9 +151,7 @@ export const getMatchById = async (req, res) => {
       match.requestedUser._id.toString() === req.user.id;
 
     if (!isParticipant) {
-      return res
-        .status(403)
-        .json({ message: "No tienes acceso a este match" });
+      return res.status(403).json({ message: "No tienes acceso a este match" });
     }
 
     // Marcar mensajes como leídos
@@ -191,9 +189,7 @@ export const acceptMatch = async (req, res) => {
 
     // Verificar que el match esté pendiente
     if (match.status !== "pending") {
-      return res
-        .status(400)
-        .json({ message: "Este match ya fue respondido" });
+      return res.status(400).json({ message: "Este match ya fue respondido" });
     }
 
     // Actualizar estado
@@ -236,9 +232,7 @@ export const rejectMatch = async (req, res) => {
 
     // Verificar que el match esté pendiente
     if (match.status !== "pending") {
-      return res
-        .status(400)
-        .json({ message: "Este match ya fue respondido" });
+      return res.status(400).json({ message: "Este match ya fue respondido" });
     }
 
     // Actualizar estado
@@ -299,11 +293,15 @@ export const sendMessage = async (req, res) => {
     const { content } = req.body;
 
     if (!content || content.trim().length === 0) {
-      return res.status(400).json({ message: "El mensaje no puede estar vacío" });
+      return res
+        .status(400)
+        .json({ message: "El mensaje no puede estar vacío" });
     }
 
-    const match = await Match.findById(id)
-      .populate("messages.sender", "username");
+    const match = await Match.findById(id).populate(
+      "messages.sender",
+      "username"
+    );
 
     if (!match) {
       return res.status(404).json({ message: "Match no encontrado" });
@@ -315,9 +313,7 @@ export const sendMessage = async (req, res) => {
       match.requestedUser.toString() === req.user.id;
 
     if (!isParticipant) {
-      return res
-        .status(403)
-        .json({ message: "No tienes acceso a este chat" });
+      return res.status(403).json({ message: "No tienes acceso a este chat" });
     }
 
     // Solo se puede chatear en matches aceptados
@@ -338,10 +334,13 @@ export const sendMessage = async (req, res) => {
     await match.save();
 
     // Poblar el último mensaje agregado
-    const populatedMatch = await Match.findById(match._id)
-      .populate("messages.sender", "username");
+    const populatedMatch = await Match.findById(match._id).populate(
+      "messages.sender",
+      "username"
+    );
 
-    const newMessage = populatedMatch.messages[populatedMatch.messages.length - 1];
+    const newMessage =
+      populatedMatch.messages[populatedMatch.messages.length - 1];
 
     res.json(newMessage);
   } catch (error) {
@@ -368,9 +367,7 @@ export const updateMeetingDetails = async (req, res) => {
       match.requestedUser.toString() === req.user.id;
 
     if (!isParticipant) {
-      return res
-        .status(403)
-        .json({ message: "No tienes acceso a este match" });
+      return res.status(403).json({ message: "No tienes acceso a este match" });
     }
 
     // Solo se pueden actualizar detalles en matches aceptados
@@ -415,9 +412,7 @@ export const completeMatch = async (req, res) => {
       match.requestedUser.toString() === req.user.id;
 
     if (!isParticipant) {
-      return res
-        .status(403)
-        .json({ message: "No tienes acceso a este match" });
+      return res.status(403).json({ message: "No tienes acceso a este match" });
     }
 
     // Solo se puede completar un match aceptado

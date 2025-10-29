@@ -168,9 +168,7 @@ function MatchDetailPage() {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   Match de Intercambio
                 </h1>
-                <p className="text-gray-600">
-                  Entre tú y {otherUser.username}
-                </p>
+                <p className="text-gray-600">Entre tú y {otherUser.username}</p>
               </div>
               <div
                 className={`${status.bg} ${status.text} px-6 py-3 rounded-full font-semibold text-lg`}
@@ -284,7 +282,10 @@ function MatchDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Columna izquierda - Chat */}
             <div className="lg:col-span-2">
-              <MatchChat match={currentMatch} onSendMessage={handleSendMessage} />
+              <MatchChat
+                match={currentMatch}
+                onSendMessage={handleSendMessage}
+              />
             </div>
 
             {/* Columna derecha - Info de contacto y coordinación */}
@@ -372,7 +373,10 @@ function MatchDetailPage() {
                     <textarea
                       value={meetingForm.notes}
                       onChange={(e) =>
-                        setMeetingForm({ ...meetingForm, notes: e.target.value })
+                        setMeetingForm({
+                          ...meetingForm,
+                          notes: e.target.value,
+                        })
                       }
                       placeholder="Detalles adicionales sobre el encuentro..."
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
@@ -434,7 +438,9 @@ function MatchDetailPage() {
                     <p className="text-sm text-red-600 font-semibold mb-1">
                       Razón:
                     </p>
-                    <p className="text-red-800">{currentMatch.rejectionReason}</p>
+                    <p className="text-red-800">
+                      {currentMatch.rejectionReason}
+                    </p>
                   </div>
                 )}
               </div>

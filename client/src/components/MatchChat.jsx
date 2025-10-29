@@ -75,7 +75,9 @@ function MatchChat({ match, onSendMessage }) {
           <div className="text-center text-gray-500 py-12">
             <div className="text-4xl mb-3">💭</div>
             <p>No hay mensajes aún</p>
-            <p className="text-sm">Inicia la conversación para coordinar el intercambio</p>
+            <p className="text-sm">
+              Inicia la conversación para coordinar el intercambio
+            </p>
           </div>
         ) : (
           <>
@@ -110,9 +112,7 @@ function MatchChat({ match, onSendMessage }) {
                       }`}
                     >
                       <span>{formatMessageTime(msg.timestamp)}</span>
-                      {isOwnMessage && (
-                        <span>{msg.isRead ? "✓✓" : "✓"}</span>
-                      )}
+                      {isOwnMessage && <span>{msg.isRead ? "✓✓" : "✓"}</span>}
                     </div>
                   </div>
                 </div>

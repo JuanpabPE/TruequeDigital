@@ -1,8 +1,7 @@
 import axios from "./axios.js";
 
 // Crear solicitud de match
-export const requestMatchRequest = (data) =>
-  axios.post("/matches", data);
+export const requestMatchRequest = (data) => axios.post("/matches", data);
 
 // Obtener matches enviados
 export const getSentMatchesRequest = (status) =>
@@ -13,20 +12,17 @@ export const getReceivedMatchesRequest = (status) =>
   axios.get(`/matches/received${status ? `?status=${status}` : ""}`);
 
 // Obtener un match por ID
-export const getMatchByIdRequest = (id) =>
-  axios.get(`/matches/${id}`);
+export const getMatchByIdRequest = (id) => axios.get(`/matches/${id}`);
 
 // Aceptar match
-export const acceptMatchRequest = (id) =>
-  axios.put(`/matches/${id}/accept`);
+export const acceptMatchRequest = (id) => axios.put(`/matches/${id}/accept`);
 
 // Rechazar match
 export const rejectMatchRequest = (id, data) =>
   axios.put(`/matches/${id}/reject`, data);
 
 // Cancelar match
-export const cancelMatchRequest = (id) =>
-  axios.put(`/matches/${id}/cancel`);
+export const cancelMatchRequest = (id) => axios.put(`/matches/${id}/cancel`);
 
 // Enviar mensaje
 export const sendMessageRequest = (id, data) =>

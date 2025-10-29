@@ -29,6 +29,14 @@ function Navbar() {
           <>
             <li>
               <Link
+                to="/dashboard"
+                className="hover:text-blue-400 transition font-semibold"
+              >
+                🏠 Inicio
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/exchanges"
                 className="hover:text-emerald-400 transition"
               >

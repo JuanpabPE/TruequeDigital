@@ -41,7 +41,9 @@ function MatchesPage() {
     try {
       setActionLoading(true);
       await acceptMatch(matchId);
-      alert("¡Intercambio aceptado! Ya puedes chatear y coordinar el encuentro.");
+      alert(
+        "¡Intercambio aceptado! Ya puedes chatear y coordinar el encuentro."
+      );
     } catch (error) {
       console.error("Error al aceptar:", error);
     } finally {
@@ -89,11 +91,27 @@ function MatchesPage() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      pending: { bg: "bg-yellow-100", text: "text-yellow-700", label: "Pendiente" },
-      accepted: { bg: "bg-green-100", text: "text-green-700", label: "Aceptado" },
+      pending: {
+        bg: "bg-yellow-100",
+        text: "text-yellow-700",
+        label: "Pendiente",
+      },
+      accepted: {
+        bg: "bg-green-100",
+        text: "text-green-700",
+        label: "Aceptado",
+      },
       rejected: { bg: "bg-red-100", text: "text-red-700", label: "Rechazado" },
-      completed: { bg: "bg-blue-100", text: "text-blue-700", label: "Completado" },
-      cancelled: { bg: "bg-gray-100", text: "text-gray-700", label: "Cancelado" },
+      completed: {
+        bg: "bg-blue-100",
+        text: "text-blue-700",
+        label: "Completado",
+      },
+      cancelled: {
+        bg: "bg-gray-100",
+        text: "text-gray-700",
+        label: "Cancelado",
+      },
     };
 
     const badge = badges[status] || badges.pending;
@@ -190,7 +208,8 @@ function MatchesPage() {
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🤝</div>
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  No hay matches {activeTab === "sent" ? "enviados" : "recibidos"}
+                  No hay matches{" "}
+                  {activeTab === "sent" ? "enviados" : "recibidos"}
                 </h3>
                 <p className="text-gray-500 mb-6">
                   {activeTab === "sent"

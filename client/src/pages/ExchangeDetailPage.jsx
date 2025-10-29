@@ -66,7 +66,9 @@ function ExchangeDetailPage() {
         initialMessage,
       });
 
-      alert("¡Solicitud de intercambio enviada! Espera la respuesta del propietario.");
+      alert(
+        "¡Solicitud de intercambio enviada! Espera la respuesta del propietario."
+      );
       setShowMatchModal(false);
       setSelectedExchange("");
       setInitialMessage("");
@@ -323,11 +325,20 @@ function ExchangeDetailPage() {
               </button>
             )}
 
+            {!isOwner && currentExchange.status !== "disponible" && (
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
+                <p className="text-gray-800 font-medium">
+                  Este trueque no está disponible
+                </p>
+                <p className="text-sm text-gray-600">
+                  Estado actual: {currentExchange.status}
+                </p>
+              </div>
+            )}
+
             {isOwner && (
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-                <p className="text-blue-800 font-medium">
-                  Este es tu exchange
-                </p>
+                <p className="text-blue-800 font-medium">Este es tu exchange</p>
                 <Link
                   to="/my-exchanges"
                   className="text-blue-600 hover:text-blue-700 text-sm"
