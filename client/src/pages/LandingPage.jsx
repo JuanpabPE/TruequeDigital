@@ -421,8 +421,8 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonios Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      {/* Testimonios Section - Carrusel Automático */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -434,65 +434,158 @@ function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Testimonio 1 */}
-            <div className="bg-gray-50 p-6 rounded-2xl">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
-                  LA
-                </div>
-                <div className="ml-3">
-                  <div className="font-bold text-gray-900">Luis Aguilar</div>
-                  <div className="text-sm text-gray-600">
-                    Estudiante de Ingeniería de Sistemas - UNI
+          {/* Carrusel animado con duplicación para loop infinito */}
+          <div className="relative">
+            <div className="flex gap-8 animate-scroll">
+              {/* Primera ronda de testimonios */}
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    CR
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Camila Rojas</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Arquitectura - PUCP
+                    </div>
                   </div>
                 </div>
+                <p className="text-gray-700">
+                  "Intercambié mis maquetas del semestre pasado por materiales nuevos y un monitor. La comunidad es súper respetuosa y rápida para coordinar."
+                </p>
               </div>
-              <p className="text-gray-700">
-                "Cambia y Gana me permitió conseguir una laptop de respaldo
-                cambiando cursos online que ya había terminado. El proceso fue
-                transparente y seguro."
-              </p>
-            </div>
 
-            {/* Testimonio 2 */}
-            <div className="bg-gray-50 p-6 rounded-2xl">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
-                  VT
-                </div>
-                <div className="ml-3">
-                  <div className="font-bold text-gray-900">Valeria Torres</div>
-                  <div className="text-sm text-gray-600">
-                    Estudiante de Psicología - UPCH
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    LA
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Luis Aguilar</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Ingeniería de Sistemas - UNI
+                    </div>
                   </div>
                 </div>
+                <p className="text-gray-700">
+                  "Cambia y Gana me permitió conseguir una laptop de respaldo
+                  cambiando cursos online que ya había terminado. El proceso fue
+                  transparente y seguro."
+                </p>
               </div>
-              <p className="text-gray-700">
-                "En una semana logré intercambiar mis libros impresos por
-                sesiones de tutoría. La suscripción es mínima comparada con todo
-                lo que recibes."
-              </p>
-            </div>
 
-            {/* Testimonio 3 */}
-            <div className="bg-gray-50 p-6 rounded-2xl">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">
-                  DM
-                </div>
-                <div className="ml-3">
-                  <div className="font-bold text-gray-900">Diego Montalvo</div>
-                  <div className="text-sm text-gray-600">
-                    Estudiante de Comunicación - ULIMA
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    VT
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Valeria Torres</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Psicología - UPCH
+                    </div>
                   </div>
                 </div>
+                <p className="text-gray-700">
+                  "En una semana logré intercambiar mis libros impresos por
+                  sesiones de tutoría. La suscripción es mínima comparada con todo
+                  lo que recibes."
+                </p>
               </div>
-              <p className="text-gray-700">
-                "Me encanta la curaduria del match. Recibí alertas con matches
-                que realmente necesito. Es como un marketplace inteligente pero
-                sin gastar dinero."
-              </p>
+
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    DM
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Diego Montalvo</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Comunicación - ULIMA
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-700">
+                  "Me encanta la curaduria del match. Recibí alertas con matches
+                  que realmente necesito. Es como un marketplace inteligente pero
+                  sin gastar dinero."
+                </p>
+              </div>
+
+              {/* Segunda ronda (duplicado para loop infinito) */}
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    CR
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Camila Rojas</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Arquitectura - PUCP
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-700">
+                  "Intercambié mis maquetas del semestre pasado por materiales nuevos y un monitor. La comunidad es súper respetuosa y rápida para coordinar."
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    LA
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Luis Aguilar</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Ingeniería de Sistemas - UNI
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-700">
+                  "Cambia y Gana me permitió conseguir una laptop de respaldo
+                  cambiando cursos online que ya había terminado. El proceso fue
+                  transparente y seguro."
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    VT
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Valeria Torres</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Psicología - UPCH
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-700">
+                  "En una semana logré intercambiar mis libros impresos por
+                  sesiones de tutoría. La suscripción es mínima comparada con todo
+                  lo que recibes."
+                </p>
+              </div>
+
+              <div className="flex-shrink-0 w-full md:w-96 bg-gray-50 p-6 rounded-2xl">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center text-white font-bold">
+                    DM
+                  </div>
+                  <div className="ml-3">
+                    <div className="font-bold text-gray-900">Diego Montalvo</div>
+                    <div className="text-sm text-gray-600">
+                      Estudiante de Comunicación - ULIMA
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-700">
+                  "Me encanta la curaduria del match. Recibí alertas con matches
+                  que realmente necesito. Es como un marketplace inteligente pero
+                  sin gastar dinero."
+                </p>
+              </div>
             </div>
           </div>
         </div>
