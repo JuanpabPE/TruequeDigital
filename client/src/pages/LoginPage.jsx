@@ -70,7 +70,7 @@ function LoginPage() {
                 id="email"
                 type="email"
                 {...register("email", { required: true })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition text-gray-900"
                 placeholder="tu@email.com"
               />
               {errors.email && (
@@ -92,7 +92,7 @@ function LoginPage() {
                 id="password"
                 type="password"
                 {...register("password", { required: true })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition text-gray-900"
                 placeholder="••••••••"
               />
               {errors.password && (
