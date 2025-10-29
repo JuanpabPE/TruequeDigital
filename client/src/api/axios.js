@@ -12,12 +12,15 @@ instance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
       console.log("🔑 Enviando token en header Authorization");
+      console.log("📏 Token length:", token.length);
+      console.log("🎯 Request URL:", config.url);
     } else {
       console.warn("⚠️ No hay token en localStorage");
     }
     return config;
   },
   (error) => {
+    console.error("❌ Error en interceptor:", error);
     return Promise.reject(error);
   }
 );

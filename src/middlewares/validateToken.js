@@ -12,7 +12,10 @@ export const authRequired = (req, res, next) => {
     if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.substring(7); // Remover "Bearer " del inicio
       source = "header";
-      console.log("✅ AUTH - Token extraído del header, longitud:", token?.length);
+      console.log(
+        "✅ AUTH - Token extraído del header, longitud:",
+        token?.length
+      );
     } else {
       console.log("⚠️ AUTH - Header Authorization no tiene formato Bearer");
     }
