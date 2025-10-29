@@ -42,7 +42,7 @@ export const requestMatch = async (req, res) => {
         .json({ message: "El exchange solicitado no está disponible" });
     }
 
-    // Validar que no exista un match pendiente duplicado
+    // Validar que no exista un match pendiente duplicado (misma dirección)
     const duplicateMatch = await Match.findDuplicatePending(
       req.user.id,
       exchangeOfferedId,
@@ -52,6 +52,41 @@ export const requestMatch = async (req, res) => {
     if (duplicateMatch) {
       return res.status(400).json({
         message: "Ya tienes una solicitud pendiente para este intercambio",
+      });
+    }
+
+    // Validar que no exista un match cruzado (dirección opuesta)
+    // Si A quiere intercambiar Exchange1 por Exchange2,
+    // no permitir que B intercambie Exchange2 por Exchange1
+    const crossMatch = await Match.findOne({
+      requester: exchangeRequested.user,
+      requestedUser: req.user.id,
+      exchangeOffered: exchangeRequestedId,
+      exchangeRequested: exchangeOfferedId,
+      status: { $in: ["pending", "accepted"] },
+    });
+
+    if (crossMatch) {
+      return res.status(400).json({
+        message:
+          "Ya existe una solicitud de intercambio entre estos productos. Revisa tus solicitudes recibidas.",
+      });
+    }
+
+    // Validar que estos exchanges no estén ya involucrados en un match aceptado
+    const activeMatch = await Match.findOne({
+      $or: [
+        { exchangeOffered: exchangeOfferedId, status: "accepted" },
+        { exchangeRequested: exchangeOfferedId, status: "accepted" },
+        { exchangeOffered: exchangeRequestedId, status: "accepted" },
+        { exchangeRequested: exchangeRequestedId, status: "accepted" },
+      ],
+    });
+
+    if (activeMatch) {
+      return res.status(400).json({
+        message:
+          "Uno de los exchanges ya está en un intercambio activo. Por favor, verifica el estado de los productos.",
       });
     }
 
@@ -192,13 +227,54 @@ export const acceptMatch = async (req, res) => {
       return res.status(400).json({ message: "Este match ya fue respondido" });
     }
 
-    // Actualizar estado
+    // Verificar que los exchanges aún estén disponibles
+    if (match.exchangeOffered.status !== "disponible") {
+      return res.status(400).json({
+        message: "El exchange ofrecido ya no está disponible",
+      });
+    }
+
+    if (match.exchangeRequested.status !== "disponible") {
+      return res.status(400).json({
+        message: "El exchange solicitado ya no está disponible",
+      });
+    }
+
+    // Actualizar estado del match
     match.status = "accepted";
     match.acceptedAt = new Date();
     match.respondedAt = new Date();
     match.contactShared = true;
 
     await match.save();
+
+    // Cambiar estado de los exchanges a "en-progreso"
+    await Exchange.findByIdAndUpdate(match.exchangeOffered._id, {
+      status: "en-progreso",
+    });
+    await Exchange.findByIdAndUpdate(match.exchangeRequested._id, {
+      status: "en-progreso",
+    });
+
+    // Rechazar automáticamente otros matches pendientes que involucren estos exchanges
+    await Match.updateMany(
+      {
+        _id: { $ne: id }, // No actualizar el match actual
+        status: "pending",
+        $or: [
+          { exchangeOffered: match.exchangeOffered._id },
+          { exchangeRequested: match.exchangeOffered._id },
+          { exchangeOffered: match.exchangeRequested._id },
+          { exchangeRequested: match.exchangeRequested._id },
+        ],
+      },
+      {
+        status: "rejected",
+        rejectionReason:
+          "El exchange ya está en un intercambio aceptado con otro usuario",
+        respondedAt: new Date(),
+      }
+    );
 
     res.json(match);
   } catch (error) {
@@ -251,33 +327,55 @@ export const rejectMatch = async (req, res) => {
   }
 };
 
-// Cancelar un match (solo el requester puede cancelar si está pending)
+// Cancelar un match (requester puede cancelar pending, ambos pueden cancelar accepted)
 export const cancelMatch = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const match = await Match.findById(id);
+    const match = await Match.findById(id)
+      .populate("exchangeOffered")
+      .populate("exchangeRequested");
 
     if (!match) {
       return res.status(404).json({ message: "Match no encontrado" });
     }
 
-    // Verificar que el usuario sea el requester
-    if (match.requester.toString() !== req.user.id) {
+    // Verificar que el usuario sea parte del match
+    const isRequester = match.requester.toString() === req.user.id;
+    const isRequestedUser = match.requestedUser.toString() === req.user.id;
+
+    if (!isRequester && !isRequestedUser) {
       return res
         .status(403)
         .json({ message: "No tienes permiso para cancelar este match" });
     }
 
-    // Solo se puede cancelar si está pending
-    if (match.status !== "pending") {
+    // Solo se puede cancelar si está pending o accepted (no completed)
+    if (match.status !== "pending" && match.status !== "accepted") {
       return res
         .status(400)
-        .json({ message: "Solo puedes cancelar matches pendientes" });
+        .json({ message: "No puedes cancelar este match" });
+    }
+
+    // Si está pending, solo el requester puede cancelar
+    if (match.status === "pending" && !isRequester) {
+      return res
+        .status(403)
+        .json({ message: "Solo el solicitante puede cancelar una solicitud pendiente" });
     }
 
     match.status = "cancelled";
     await match.save();
+
+    // Si el match estaba aceptado, devolver exchanges a "disponible"
+    if (match.status === "accepted") {
+      await Exchange.findByIdAndUpdate(match.exchangeOffered._id, {
+        status: "disponible",
+      });
+      await Exchange.findByIdAndUpdate(match.exchangeRequested._id, {
+        status: "disponible",
+      });
+    }
 
     res.json({ message: "Match cancelado exitosamente", match });
   } catch (error) {

@@ -19,6 +19,7 @@ function ExchangeDetailPage() {
   const [initialMessage, setInitialMessage] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [requesting, setRequesting] = useState(false);
+  const [hasPendingRequest, setHasPendingRequest] = useState(false);
 
   const getConditionLabel = (condition) => {
     const labels = {
@@ -112,12 +113,17 @@ function ExchangeDetailPage() {
       setShowMatchModal(false);
       setSelectedExchange("");
       setInitialMessage("");
+      setHasPendingRequest(true); // Marcar que ya hay una solicitud pendiente
     } catch (error) {
       console.error("Error al solicitar match:", error);
       alert(
         error.response?.data?.message ||
           "Error al solicitar intercambio. Verifica que no tengas una solicitud pendiente."
       );
+      // Si el error es que ya hay una solicitud pendiente, marcarlo
+      if (error.response?.data?.message?.includes("pendiente")) {
+        setHasPendingRequest(true);
+      }
     } finally {
       setRequesting(false);
     }
@@ -353,13 +359,30 @@ function ExchangeDetailPage() {
             </div>
 
             {/* Botón de acción */}
-            {!isOwner && isAvailable(currentExchange.status) && (
+            {!isOwner && isAvailable(currentExchange.status) && !hasPendingRequest && (
               <button
                 onClick={() => setShowMatchModal(true)}
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl"
               >
                 🤝 Solicitar Intercambio
               </button>
+            )}
+
+            {!isOwner && isAvailable(currentExchange.status) && hasPendingRequest && (
+              <div className="bg-green-50 border-2 border-green-500 rounded-xl p-4 text-center">
+                <p className="text-green-800 font-semibold mb-1">
+                  ✓ Solicitud Enviada
+                </p>
+                <p className="text-sm text-green-600">
+                  Esperando respuesta del propietario
+                </p>
+                <Link
+                  to="/matches"
+                  className="inline-block mt-3 text-purple-600 hover:text-purple-700 font-medium text-sm"
+                >
+                  Ver mis solicitudes →
+                </Link>
+              </div>
             )}
 
             {!isOwner && !isAvailable(currentExchange.status) && (
