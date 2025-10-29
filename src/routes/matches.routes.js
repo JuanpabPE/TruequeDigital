@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authRequired } from "../middlewares/validateToken.js";
-import { requireActiveMembership } from "../middlewares/membership.middleware.js";
+import { requireActiveMembership } from "../middlewares/requireMembership.js";
 import {
   requestMatch,
   getSentMatches,
