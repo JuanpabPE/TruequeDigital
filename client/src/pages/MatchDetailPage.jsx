@@ -90,21 +90,32 @@ function MatchDetailPage() {
   };
 
   const handleCompleteMatch = async () => {
+    // Verificar si ya confirmó
+    const isRequester = currentMatch.requester._id === user.id;
+    const alreadyConfirmed = isRequester
+      ? currentMatch.completionConfirmation?.requesterConfirmed
+      : currentMatch.completionConfirmation?.requestedUserConfirmed;
+
+    if (alreadyConfirmed) {
+      alert("Ya has confirmado que el intercambio se completó. Esperando confirmación del otro usuario.");
+      return;
+    }
+
     if (
       !confirm(
-        "¿Marcar este intercambio como completado? Esta acción no se puede deshacer y los exchanges cambiarán a estado 'intercambiado'."
+        "¿Confirmar que el intercambio se ha completado? Se requiere confirmación de ambos usuarios para finalizar."
       )
     ) {
       return;
     }
 
     try {
-      await completeMatch(id);
-      alert("¡Intercambio completado! Gracias por usar Trueque Digital 🎉");
+      const response = await completeMatch(id);
+      alert(response.message);
       await loadMatch();
     } catch (error) {
       console.error("Error al completar:", error);
-      alert("Error al completar el intercambio");
+      alert("Error al confirmar el intercambio");
     }
   };
 
@@ -404,16 +415,83 @@ function MatchDetailPage() {
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
                     ¿Intercambio realizado?
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Una vez que se haya realizado el intercambio presencial,
-                    márcalo como completado.
-                  </p>
-                  <button
-                    onClick={handleCompleteMatch}
-                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-600 transition-all"
-                  >
-                    ✓ Marcar como Completado
-                  </button>
+                  
+                  {(() => {
+                    const isRequester = currentMatch.requester._id === user.id;
+                    const myConfirmed = isRequester
+                      ? currentMatch.completionConfirmation?.requesterConfirmed
+                      : currentMatch.completionConfirmation?.requestedUserConfirmed;
+                    const otherConfirmed = isRequester
+                      ? currentMatch.completionConfirmation?.requestedUserConfirmed
+                      : currentMatch.completionConfirmation?.requesterConfirmed;
+
+                    if (myConfirmed && otherConfirmed) {
+                      return (
+                        <div className="text-center">
+                          <div className="text-4xl mb-3">🎉</div>
+                          <p className="text-green-600 font-semibold mb-2">
+                            ¡Intercambio completado por ambos!
+                          </p>
+                          <p className="text-gray-500 text-sm">
+                            El intercambio ha sido confirmado exitosamente
+                          </p>
+                        </div>
+                      );
+                    } else if (myConfirmed) {
+                      return (
+                        <div>
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3">
+                            <p className="text-blue-700 font-semibold mb-1">
+                              ✓ Ya confirmaste
+                            </p>
+                            <p className="text-blue-600 text-sm">
+                              Esperando confirmación de {otherUser.username}
+                            </p>
+                          </div>
+                          <button
+                            disabled
+                            className="w-full bg-gray-300 text-gray-600 py-3 rounded-lg font-semibold cursor-not-allowed"
+                          >
+                            ✓ Ya confirmaste
+                          </button>
+                        </div>
+                      );
+                    } else if (otherConfirmed) {
+                      return (
+                        <div>
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-3">
+                            <p className="text-yellow-700 font-semibold mb-1">
+                              ⏳ {otherUser.username} ya confirmó
+                            </p>
+                            <p className="text-yellow-600 text-sm">
+                              Falta tu confirmación para completar el intercambio
+                            </p>
+                          </div>
+                          <button
+                            onClick={handleCompleteMatch}
+                            className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-600 transition-all"
+                          >
+                            ✓ Confirmar que se realizó
+                          </button>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div>
+                          <p className="text-gray-600 text-sm mb-4">
+                            Una vez realizado el intercambio presencial, confirma aquí.
+                            Se requiere confirmación de ambos usuarios.
+                          </p>
+                          <button
+                            onClick={handleCompleteMatch}
+                            className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-600 transition-all"
+                          >
+                            ✓ Confirmar Intercambio Realizado
+                          </button>
+                        </div>
+                      );
+                    }
+                  })()}
                 </div>
               )}
             </div>

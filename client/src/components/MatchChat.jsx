@@ -16,8 +16,19 @@ function MatchChat({ match, onSendMessage }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Detectar si el usuario está cerca del final del scroll
+  const isNearBottom = () => {
+    if (!messagesContainerRef.current) return true;
+    const container = messagesContainerRef.current;
+    const threshold = 150; // píxeles desde el fondo
+    return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+  };
+
   useEffect(() => {
-    scrollToBottom();
+    // Solo hacer scroll automático si el usuario está cerca del fondo
+    if (isNearBottom()) {
+      scrollToBottom();
+    }
   }, [match?.messages]);
 
   // Polling de mensajes SOLO cuando no estés escribiendo

@@ -94,7 +94,21 @@ const matchSchema = new mongoose.Schema(
     // Fecha de aceptación
     acceptedAt: Date,
 
-    // Fecha de completado
+    // Confirmaciones de completado (bilateral)
+    completionConfirmation: {
+      requesterConfirmed: {
+        type: Boolean,
+        default: false,
+      },
+      requesterConfirmedAt: Date,
+      requestedUserConfirmed: {
+        type: Boolean,
+        default: false,
+      },
+      requestedUserConfirmedAt: Date,
+    },
+
+    // Fecha de completado (cuando ambos confirmen)
     completedAt: Date,
   },
   {

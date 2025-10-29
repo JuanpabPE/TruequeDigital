@@ -107,16 +107,20 @@ export function MatchProvider({ children }) {
   const refreshMessages = async (id) => {
     try {
       const res = await getMatchByIdRequest(id);
-      // Actualizar mensajes Y meetingDetails si cambiaron
+      // Actualizar mensajes, meetingDetails, status Y completionConfirmation si cambiaron
       if (currentMatch) {
         const messagesChanged = res.data.messages.length !== currentMatch.messages?.length;
         const meetingChanged = JSON.stringify(res.data.meetingDetails) !== JSON.stringify(currentMatch.meetingDetails);
+        const statusChanged = res.data.status !== currentMatch.status;
+        const confirmationChanged = JSON.stringify(res.data.completionConfirmation) !== JSON.stringify(currentMatch.completionConfirmation);
         
-        if (messagesChanged || meetingChanged) {
+        if (messagesChanged || meetingChanged || statusChanged || confirmationChanged) {
           setCurrentMatch((prev) => ({
             ...prev,
             messages: res.data.messages,
             meetingDetails: res.data.meetingDetails,
+            status: res.data.status, // Sincronizar el estado
+            completionConfirmation: res.data.completionConfirmation, // Sincronizar confirmaciones
           }));
         }
       }

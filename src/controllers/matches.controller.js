@@ -401,12 +401,14 @@ export const updateMeetingDetails = async (req, res) => {
   }
 };
 
-// Marcar match como completado
+// Marcar match como completado (confirmación bilateral)
 export const completeMatch = async (req, res) => {
   try {
     const { id } = req.params;
 
     const match = await Match.findById(id)
+      .populate("requester", "username")
+      .populate("requestedUser", "username")
       .populate("exchangeOffered")
       .populate("exchangeRequested");
 
@@ -415,36 +417,74 @@ export const completeMatch = async (req, res) => {
     }
 
     // Verificar que el usuario sea parte del match
-    const isParticipant =
-      match.requester.toString() === req.user.id ||
-      match.requestedUser.toString() === req.user.id;
+    const isRequester = match.requester._id.toString() === req.user.id;
+    const isRequestedUser = match.requestedUser._id.toString() === req.user.id;
 
-    if (!isParticipant) {
+    if (!isRequester && !isRequestedUser) {
       return res.status(403).json({ message: "No tienes acceso a este match" });
     }
 
     // Solo se puede completar un match aceptado
-    if (match.status !== "accepted") {
+    if (match.status !== "accepted" && match.status !== "completed") {
       return res.status(400).json({
         message: "Solo puedes completar matches aceptados",
       });
     }
 
-    // Marcar como completado
-    match.status = "completed";
-    match.completedAt = new Date();
+    // Inicializar completionConfirmation si no existe
+    if (!match.completionConfirmation) {
+      match.completionConfirmation = {
+        requesterConfirmed: false,
+        requestedUserConfirmed: false,
+      };
+    }
 
-    // Actualizar estado de los exchanges a "intercambiado"
-    await Exchange.findByIdAndUpdate(match.exchangeOffered._id, {
-      status: "intercambiado",
-    });
-    await Exchange.findByIdAndUpdate(match.exchangeRequested._id, {
-      status: "intercambiado",
-    });
+    // Registrar confirmación del usuario actual
+    if (isRequester) {
+      match.completionConfirmation.requesterConfirmed = true;
+      match.completionConfirmation.requesterConfirmedAt = new Date();
+    } else {
+      match.completionConfirmation.requestedUserConfirmed = true;
+      match.completionConfirmation.requestedUserConfirmedAt = new Date();
+    }
 
-    await match.save();
+    // Si ambos han confirmado, completar el match
+    if (
+      match.completionConfirmation.requesterConfirmed &&
+      match.completionConfirmation.requestedUserConfirmed
+    ) {
+      match.status = "completed";
+      match.completedAt = new Date();
 
-    res.json({ message: "Match completado exitosamente", match });
+      // Actualizar estado de los exchanges a "intercambiado"
+      await Exchange.findByIdAndUpdate(match.exchangeOffered._id, {
+        status: "intercambiado",
+      });
+      await Exchange.findByIdAndUpdate(match.exchangeRequested._id, {
+        status: "intercambiado",
+      });
+
+      await match.save();
+
+      return res.json({
+        message: "¡Intercambio completado! Ambos usuarios han confirmado.",
+        match,
+        bothConfirmed: true,
+      });
+    } else {
+      // Solo uno ha confirmado
+      await match.save();
+
+      const otherUser = isRequester
+        ? match.requestedUser.username
+        : match.requester.username;
+
+      return res.json({
+        message: `Tu confirmación ha sido registrada. Esperando confirmación de ${otherUser}.`,
+        match,
+        bothConfirmed: false,
+      });
+    }
   } catch (error) {
     console.error("Error al completar match:", error);
     res.status(500).json({ message: "Error al completar match" });
