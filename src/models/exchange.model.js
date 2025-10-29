@@ -39,7 +39,7 @@ const exchangeSchema = new mongoose.Schema(
       },
       condition: {
         type: String,
-        enum: ["new", "like-new", "good", "fair"],
+        enum: ["new", "like-new", "good", "fair", "poor"],
         default: "good",
       },
       estimatedValue: {
