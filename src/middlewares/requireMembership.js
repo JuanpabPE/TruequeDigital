@@ -25,7 +25,23 @@ export const requireActiveMembership = async (req, res, next) => {
     console.log("👤 User found:", user.username, "Membership:", user.activeMembership?.status);
 
     if (!user.activeMembership) {
-      console.log("❌ No active membership");
+      console.log("❌ No active membership for user:", user.username);
+      
+      // Buscar si tiene alguna membresía activa que no esté enlazada
+      const activeMembership = await Membership.findOne({
+        user: user._id,
+        status: "active",
+        endDate: { $gt: new Date() },
+      });
+
+      if (activeMembership) {
+        console.log("✅ Found unlinked membership, linking now...");
+        user.activeMembership = activeMembership._id;
+        await user.save();
+        req.membership = activeMembership;
+        return next();
+      }
+
       return res.status(403).json({
         message: "Necesitas una membresía activa para realizar esta acción",
         requiresMembership: true,
