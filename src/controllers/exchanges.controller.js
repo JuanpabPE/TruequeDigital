@@ -34,7 +34,7 @@ export const createExchange = async (req, res) => {
       location: isVirtual ? "Virtual" : location,
       isVirtual,
       images: images || [],
-      status: "available",
+      status: "disponible", // Estado inicial en español
     });
 
     const savedExchange = await newExchange.save();

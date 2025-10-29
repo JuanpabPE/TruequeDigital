@@ -50,12 +50,15 @@ export const ExchangesProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       const res = await getExchangesRequest(filters);
-      setExchanges(res.data);
-      return res.data;
+      // Asegurarse de que la respuesta es un array
+      const data = Array.isArray(res.data) ? res.data : [];
+      setExchanges(data);
+      return data;
     } catch (err) {
       const errorMsg =
         err.response?.data?.message || "Error al obtener trueques";
       setError(errorMsg);
+      setExchanges([]); // Establecer array vacío en caso de error
       throw err;
     } finally {
       setLoading(false);
@@ -86,12 +89,16 @@ export const ExchangesProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       const res = await getMyExchangesRequest();
-      setMyExchanges(res.data);
-      return res.data;
+      // Asegurarse de que la respuesta es un array
+      const data = Array.isArray(res.data) ? res.data : [];
+      setMyExchanges(data);
+      return data;
     } catch (err) {
       const errorMsg =
-        err.response?.data?.message || "Error al obtener tus trueques";
+        err.response?.data?.message || "Error al obtener mis trueques";
       setError(errorMsg);
+      console.error("Error al cargar mis exchanges:", err);
+      setMyExchanges([]); // Establecer array vacío en caso de error
       throw err;
     } finally {
       setLoading(false);

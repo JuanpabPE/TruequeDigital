@@ -13,10 +13,7 @@ import { requireActiveMembership } from "../middlewares/requireMembership.js";
 
 const router = Router();
 
-// Rutas públicas (cualquier usuario autenticado puede ver)
-router.get("/exchanges", authRequired, getExchanges);
-router.get("/exchanges/:id", authRequired, getExchangeById);
-
+// IMPORTANTE: Rutas específicas ANTES de rutas con parámetros
 // Rutas protegidas (requieren membresía activa)
 router.post(
   "/exchanges",
@@ -30,6 +27,12 @@ router.get(
   requireActiveMembership,
   getMyExchanges
 );
+
+// Rutas públicas (cualquier usuario autenticado puede ver)
+router.get("/exchanges", authRequired, getExchanges);
+router.get("/exchanges/:id", authRequired, getExchangeById);
+
+// Rutas de actualización (requieren membresía activa)
 router.put(
   "/exchanges/:id",
   authRequired,
