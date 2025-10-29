@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useExchanges } from "../context/ExchangesContext";
 import { useMatches } from "../context/MatchContext";
 import { useAuth } from "../context/AuthContext";
+import { getMyExchangesRequest } from "../api/exchanges";
 import Navbar from "../components/Navbar";
 
 function ExchangeDetailPage() {
@@ -60,18 +61,8 @@ function ExchangeDetailPage() {
   useEffect(() => {
     const fetchMyExchanges = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/my-exchanges`,
-          {
-            credentials: "include",
-          }
-        );
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
+        const res = await getMyExchangesRequest();
+        const data = res.data;
 
         // Asegurar que data es un array
         if (!Array.isArray(data)) {
