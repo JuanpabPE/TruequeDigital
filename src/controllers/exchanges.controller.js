@@ -38,13 +38,16 @@ export const createExchange = async (req, res) => {
     });
 
     const savedExchange = await newExchange.save();
-    const populatedExchange = await Exchange.findById(savedExchange._id)
-      .populate("user", "username email university averageRating");
+    const populatedExchange = await Exchange.findById(
+      savedExchange._id
+    ).populate("user", "username email university averageRating");
 
     res.status(201).json(populatedExchange);
   } catch (error) {
     console.error("Error creating exchange:", error);
-    res.status(500).json({ message: "Error al crear el trueque", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al crear el trueque", error: error.message });
   }
 };
 
@@ -105,7 +108,9 @@ export const getExchanges = async (req, res) => {
     res.json(exchanges);
   } catch (error) {
     console.error("Error fetching exchanges:", error);
-    res.status(500).json({ message: "Error al obtener trueques", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al obtener trueques", error: error.message });
   }
 };
 
@@ -114,8 +119,10 @@ export const getExchangeById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const exchange = await Exchange.findById(id)
-      .populate("user", "username email university career averageRating profileImage phone");
+    const exchange = await Exchange.findById(id).populate(
+      "user",
+      "username email university career averageRating profileImage phone"
+    );
 
     if (!exchange) {
       return res.status(404).json({ message: "Trueque no encontrado" });
@@ -124,7 +131,9 @@ export const getExchangeById = async (req, res) => {
     res.json(exchange);
   } catch (error) {
     console.error("Error fetching exchange:", error);
-    res.status(500).json({ message: "Error al obtener el trueque", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al obtener el trueque", error: error.message });
   }
 };
 
@@ -138,7 +147,9 @@ export const getMyExchanges = async (req, res) => {
     res.json(exchanges);
   } catch (error) {
     console.error("Error fetching my exchanges:", error);
-    res.status(500).json({ message: "Error al obtener tus trueques", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al obtener tus trueques", error: error.message });
   }
 };
 
@@ -155,7 +166,9 @@ export const updateExchange = async (req, res) => {
 
     // Verificar que el usuario sea el dueño
     if (exchange.user.toString() !== req.user.id) {
-      return res.status(403).json({ message: "No tienes permiso para editar este trueque" });
+      return res
+        .status(403)
+        .json({ message: "No tienes permiso para editar este trueque" });
     }
 
     const {
@@ -177,7 +190,8 @@ export const updateExchange = async (req, res) => {
     if (description) exchange.description = description;
     if (offeringCategory) exchange.offering.category = offeringCategory;
     if (offeringCondition) exchange.offering.condition = offeringCondition;
-    if (offeringEstimatedValue) exchange.offering.estimatedValue = offeringEstimatedValue;
+    if (offeringEstimatedValue)
+      exchange.offering.estimatedValue = offeringEstimatedValue;
     if (seekingCategory) exchange.seeking.category = seekingCategory;
     if (seekingDescription) exchange.seeking.description = seekingDescription;
     if (location) exchange.location = location;
@@ -186,13 +200,19 @@ export const updateExchange = async (req, res) => {
     if (status) exchange.status = status;
 
     const updatedExchange = await exchange.save();
-    const populatedExchange = await Exchange.findById(updatedExchange._id)
-      .populate("user", "username email university averageRating");
+    const populatedExchange = await Exchange.findById(
+      updatedExchange._id
+    ).populate("user", "username email university averageRating");
 
     res.json(populatedExchange);
   } catch (error) {
     console.error("Error updating exchange:", error);
-    res.status(500).json({ message: "Error al actualizar el trueque", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Error al actualizar el trueque",
+        error: error.message,
+      });
   }
 };
 
@@ -209,7 +229,9 @@ export const deleteExchange = async (req, res) => {
 
     // Verificar que el usuario sea el dueño
     if (exchange.user.toString() !== req.user.id) {
-      return res.status(403).json({ message: "No tienes permiso para eliminar este trueque" });
+      return res
+        .status(403)
+        .json({ message: "No tienes permiso para eliminar este trueque" });
     }
 
     await Exchange.findByIdAndDelete(id);
@@ -217,7 +239,9 @@ export const deleteExchange = async (req, res) => {
     res.json({ message: "Trueque eliminado exitosamente" });
   } catch (error) {
     console.error("Error deleting exchange:", error);
-    res.status(500).json({ message: "Error al eliminar el trueque", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al eliminar el trueque", error: error.message });
   }
 };
 
@@ -227,7 +251,12 @@ export const updateExchangeStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const validStatuses = ["available", "in-progress", "completed", "cancelled"];
+    const validStatuses = [
+      "available",
+      "in-progress",
+      "completed",
+      "cancelled",
+    ];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Estado inválido" });
     }
@@ -240,18 +269,24 @@ export const updateExchangeStatus = async (req, res) => {
 
     // Verificar que el usuario sea el dueño
     if (exchange.user.toString() !== req.user.id) {
-      return res.status(403).json({ message: "No tienes permiso para cambiar el estado" });
+      return res
+        .status(403)
+        .json({ message: "No tienes permiso para cambiar el estado" });
     }
 
     exchange.status = status;
     await exchange.save();
 
-    const populatedExchange = await Exchange.findById(exchange._id)
-      .populate("user", "username email university averageRating");
+    const populatedExchange = await Exchange.findById(exchange._id).populate(
+      "user",
+      "username email university averageRating"
+    );
 
     res.json(populatedExchange);
   } catch (error) {
     console.error("Error updating status:", error);
-    res.status(500).json({ message: "Error al actualizar el estado", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al actualizar el estado", error: error.message });
   }
 };

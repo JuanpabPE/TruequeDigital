@@ -32,7 +32,7 @@ function ExchangesListPage() {
   const loadExchanges = async (customFilters = {}) => {
     const filterData = { ...filters, ...customFilters };
     const cleanFilters = {};
-    
+
     if (filterData.category && filterData.category !== "Todos") {
       cleanFilters.category = filterData.category;
     }
@@ -42,7 +42,7 @@ function ExchangesListPage() {
     if (filterData.isVirtual !== "") {
       cleanFilters.isVirtual = filterData.isVirtual;
     }
-    
+
     await getExchanges(cleanFilters);
   };
 
@@ -115,14 +115,19 @@ function ExchangesListPage() {
 
           {/* Category Pills */}
           <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">Categorías</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              Categorías
+            </h3>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat}
-                  onClick={() => handleCategoryChange(cat === "Todos" ? "" : cat)}
+                  onClick={() =>
+                    handleCategoryChange(cat === "Todos" ? "" : cat)
+                  }
                   className={`px-4 py-2 rounded-full font-medium transition ${
-                    (filters.category === cat || (cat === "Todos" && !filters.category))
+                    filters.category === cat ||
+                    (cat === "Todos" && !filters.category)
                       ? "bg-emerald-500 text-white shadow-md"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
@@ -135,7 +140,9 @@ function ExchangesListPage() {
 
           {/* Virtual Filter */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">Tipo de trueque</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              Tipo de trueque
+            </h3>
             <div className="flex gap-2">
               <button
                 onClick={() => handleVirtualFilter("")}
@@ -213,7 +220,7 @@ function ExchangesListPage() {
                       📦
                     </div>
                   )}
-                  
+
                   {/* Virtual Badge */}
                   {exchange.isVirtual && (
                     <div className="absolute top-3 right-3 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
@@ -227,7 +234,7 @@ function ExchangesListPage() {
                   <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-emerald-600 transition">
                     {exchange.title}
                   </h3>
-                  
+
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {exchange.description}
                   </p>
@@ -243,7 +250,8 @@ function ExchangesListPage() {
                       </span>
                     </div>
                     <div className="text-xs text-gray-600">
-                      {getConditionLabel(exchange.offering.condition)} • S/ {exchange.offering.estimatedValue}
+                      {getConditionLabel(exchange.offering.condition)} • S/{" "}
+                      {exchange.offering.estimatedValue}
                     </div>
                   </div>
 
@@ -276,7 +284,7 @@ function ExchangesListPage() {
                         )}
                       </div>
                     </div>
-                    
+
                     {!exchange.isVirtual && (
                       <div className="text-xs text-gray-500">
                         📍 {exchange.location}

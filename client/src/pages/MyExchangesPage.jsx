@@ -4,7 +4,13 @@ import { useExchanges } from "../context/ExchangesContext";
 
 function MyExchangesPage() {
   const navigate = useNavigate();
-  const { myExchanges, getMyExchanges, deleteExchange, updateExchangeStatus, loading } = useExchanges();
+  const {
+    myExchanges,
+    getMyExchanges,
+    deleteExchange,
+    updateExchangeStatus,
+    loading,
+  } = useExchanges();
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
@@ -40,14 +46,32 @@ function MyExchangesPage() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      available: { bg: "bg-green-100", text: "text-green-800", label: "Disponible" },
-      "in-progress": { bg: "bg-yellow-100", text: "text-yellow-800", label: "En progreso" },
-      completed: { bg: "bg-blue-100", text: "text-blue-800", label: "Completado" },
-      cancelled: { bg: "bg-gray-100", text: "text-gray-800", label: "Cancelado" },
+      available: {
+        bg: "bg-green-100",
+        text: "text-green-800",
+        label: "Disponible",
+      },
+      "in-progress": {
+        bg: "bg-yellow-100",
+        text: "text-yellow-800",
+        label: "En progreso",
+      },
+      completed: {
+        bg: "bg-blue-100",
+        text: "text-blue-800",
+        label: "Completado",
+      },
+      cancelled: {
+        bg: "bg-gray-100",
+        text: "text-gray-800",
+        label: "Cancelado",
+      },
     };
     const badge = badges[status] || badges.available;
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${badge.bg} ${badge.text}`}>
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-semibold ${badge.bg} ${badge.text}`}
+      >
         {badge.label}
       </span>
     );
@@ -70,7 +94,9 @@ function MyExchangesPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Mis Trueques</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Mis Trueques
+            </h1>
             <p className="text-gray-600">
               Administra tus publicaciones activas
             </p>
@@ -185,11 +211,16 @@ function MyExchangesPage() {
                     {/* Location & Date */}
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                       <span>
-                        {exchange.isVirtual ? "💻 Virtual" : `📍 ${exchange.location}`}
+                        {exchange.isVirtual
+                          ? "💻 Virtual"
+                          : `📍 ${exchange.location}`}
                       </span>
                       <span>•</span>
                       <span>
-                        📅 {new Date(exchange.createdAt).toLocaleDateString("es-ES")}
+                        📅{" "}
+                        {new Date(exchange.createdAt).toLocaleDateString(
+                          "es-ES"
+                        )}
                       </span>
                     </div>
 
@@ -199,13 +230,17 @@ function MyExchangesPage() {
                       {exchange.status === "available" && (
                         <>
                           <button
-                            onClick={() => handleStatusChange(exchange._id, "in-progress")}
+                            onClick={() =>
+                              handleStatusChange(exchange._id, "in-progress")
+                            }
                             className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition text-sm font-medium"
                           >
                             Marcar en progreso
                           </button>
                           <button
-                            onClick={() => handleStatusChange(exchange._id, "completed")}
+                            onClick={() =>
+                              handleStatusChange(exchange._id, "completed")
+                            }
                             className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition text-sm font-medium"
                           >
                             Marcar completado
@@ -216,13 +251,17 @@ function MyExchangesPage() {
                       {exchange.status === "in-progress" && (
                         <>
                           <button
-                            onClick={() => handleStatusChange(exchange._id, "available")}
+                            onClick={() =>
+                              handleStatusChange(exchange._id, "available")
+                            }
                             className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition text-sm font-medium"
                           >
                             Volver a disponible
                           </button>
                           <button
-                            onClick={() => handleStatusChange(exchange._id, "completed")}
+                            onClick={() =>
+                              handleStatusChange(exchange._id, "completed")
+                            }
                             className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition text-sm font-medium"
                           >
                             Marcar completado

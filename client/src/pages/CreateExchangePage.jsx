@@ -57,7 +57,7 @@ function CreateExchangePage() {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    
+
     if (files.length + selectedFiles.length > 5) {
       setSubmitError("Máximo 5 imágenes permitidas");
       return;
@@ -65,7 +65,7 @@ function CreateExchangePage() {
 
     // Crear previsualizaciones
     const newPreviews = files.map((file) => URL.createObjectURL(file));
-    
+
     setSelectedFiles([...selectedFiles, ...files]);
     setImagePreviews([...imagePreviews, ...newPreviews]);
     setSubmitError(null);
@@ -74,10 +74,10 @@ function CreateExchangePage() {
   const removeImage = (index) => {
     const newFiles = selectedFiles.filter((_, i) => i !== index);
     const newPreviews = imagePreviews.filter((_, i) => i !== index);
-    
+
     // Liberar memoria del preview eliminado
     URL.revokeObjectURL(imagePreviews[index]);
-    
+
     setSelectedFiles(newFiles);
     setImagePreviews(newPreviews);
   };
@@ -118,17 +118,19 @@ function CreateExchangePage() {
       };
 
       await createExchange(exchangeData);
-      
+
       // Limpiar previews
       imagePreviews.forEach((preview) => URL.revokeObjectURL(preview));
-      
+
       navigate("/my-exchanges");
     } catch (err) {
       console.error("Error creating exchange:", err);
       if (err.response?.data?.requiresMembership) {
         navigate("/plans");
       } else {
-        setSubmitError(err.response?.data?.message || "Error al crear el trueque");
+        setSubmitError(
+          err.response?.data?.message || "Error al crear el trueque"
+        );
       }
     }
   };
@@ -162,7 +164,10 @@ function CreateExchangePage() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white rounded-2xl shadow-xl p-8 space-y-8"
+        >
           {/* Información General */}
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-900 border-b pb-2">
@@ -184,7 +189,9 @@ function CreateExchangePage() {
                 placeholder="Ej: Laptop HP por Bicicleta de montaña"
               />
               {errors.title && (
-                <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
@@ -202,7 +209,9 @@ function CreateExchangePage() {
                 placeholder="Describe con detalle tu trueque..."
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.description.message}
+                </p>
               )}
             </div>
           </div>
@@ -362,13 +371,17 @@ function CreateExchangePage() {
                 <input
                   type="text"
                   {...register("location", {
-                    required: !isVirtual ? "La ubicación es obligatoria" : false,
+                    required: !isVirtual
+                      ? "La ubicación es obligatoria"
+                      : false,
                   })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition text-gray-900"
                   placeholder="Ej: Universidad Privada del Norte - Sede Trujillo"
                 />
                 {errors.location && (
-                  <p className="mt-1 text-sm text-red-600">{errors.location.message}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.location.message}
+                  </p>
                 )}
               </div>
             )}

@@ -13,17 +13,26 @@ function Navbar() {
         {isAuthenticated ? (
           <>
             <li>
-              <Link to="/exchanges" className="hover:text-emerald-400 transition">
+              <Link
+                to="/exchanges"
+                className="hover:text-emerald-400 transition"
+              >
                 Trueques
               </Link>
             </li>
             <li>
-              <Link to="/my-exchanges" className="hover:text-emerald-400 transition">
+              <Link
+                to="/my-exchanges"
+                className="hover:text-emerald-400 transition"
+              >
                 Mis Trueques
               </Link>
             </li>
             <li>
-              <Link to="/membership" className="hover:text-emerald-400 transition">
+              <Link
+                to="/membership"
+                className="hover:text-emerald-400 transition"
+              >
                 Membresía
               </Link>
             </li>
@@ -51,7 +60,10 @@ function Navbar() {
         ) : (
           <>
             <li>
-              <Link to="/login" className="bg-emerald-500 px-4 py-2 rounded-lg hover:bg-emerald-600 transition">
+              <Link
+                to="/login"
+                className="bg-emerald-500 px-4 py-2 rounded-lg hover:bg-emerald-600 transition"
+              >
                 Ingresar
               </Link>
             </li>

@@ -46,7 +46,9 @@ export const uploadImage = async (req, res) => {
     });
   } catch (error) {
     console.error("Error uploading image:", error);
-    res.status(500).json({ message: "Error al subir la imagen", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al subir la imagen", error: error.message });
   }
 };
 
@@ -93,7 +95,9 @@ export const uploadImages = async (req, res) => {
     res.json({ images });
   } catch (error) {
     console.error("Error uploading images:", error);
-    res.status(500).json({ message: "Error al subir las imágenes", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al subir las imágenes", error: error.message });
   }
 };
 
@@ -111,6 +115,8 @@ export const deleteImage = async (req, res) => {
     res.json({ message: "Imagen eliminada exitosamente" });
   } catch (error) {
     console.error("Error deleting image:", error);
-    res.status(500).json({ message: "Error al eliminar la imagen", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al eliminar la imagen", error: error.message });
   }
 };

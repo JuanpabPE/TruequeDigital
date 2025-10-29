@@ -18,10 +18,35 @@ router.get("/exchanges", authRequired, getExchanges);
 router.get("/exchanges/:id", authRequired, getExchangeById);
 
 // Rutas protegidas (requieren membresía activa)
-router.post("/exchanges", authRequired, requireActiveMembership, createExchange);
-router.get("/my-exchanges", authRequired, requireActiveMembership, getMyExchanges);
-router.put("/exchanges/:id", authRequired, requireActiveMembership, updateExchange);
-router.delete("/exchanges/:id", authRequired, requireActiveMembership, deleteExchange);
-router.patch("/exchanges/:id/status", authRequired, requireActiveMembership, updateExchangeStatus);
+router.post(
+  "/exchanges",
+  authRequired,
+  requireActiveMembership,
+  createExchange
+);
+router.get(
+  "/my-exchanges",
+  authRequired,
+  requireActiveMembership,
+  getMyExchanges
+);
+router.put(
+  "/exchanges/:id",
+  authRequired,
+  requireActiveMembership,
+  updateExchange
+);
+router.delete(
+  "/exchanges/:id",
+  authRequired,
+  requireActiveMembership,
+  deleteExchange
+);
+router.patch(
+  "/exchanges/:id/status",
+  authRequired,
+  requireActiveMembership,
+  updateExchangeStatus
+);
 
 export default router;

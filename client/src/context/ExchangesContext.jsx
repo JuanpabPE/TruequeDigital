@@ -35,7 +35,8 @@ export const ExchangesProvider = ({ children }) => {
       setMyExchanges([res.data, ...myExchanges]);
       return res.data;
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al crear el trueque";
+      const errorMsg =
+        err.response?.data?.message || "Error al crear el trueque";
       setError(errorMsg);
       throw err;
     } finally {
@@ -52,7 +53,8 @@ export const ExchangesProvider = ({ children }) => {
       setExchanges(res.data);
       return res.data;
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al obtener trueques";
+      const errorMsg =
+        err.response?.data?.message || "Error al obtener trueques";
       setError(errorMsg);
       throw err;
     } finally {
@@ -69,7 +71,8 @@ export const ExchangesProvider = ({ children }) => {
       setCurrentExchange(res.data);
       return res.data;
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al obtener el trueque";
+      const errorMsg =
+        err.response?.data?.message || "Error al obtener el trueque";
       setError(errorMsg);
       throw err;
     } finally {
@@ -86,7 +89,8 @@ export const ExchangesProvider = ({ children }) => {
       setMyExchanges(res.data);
       return res.data;
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al obtener tus trueques";
+      const errorMsg =
+        err.response?.data?.message || "Error al obtener tus trueques";
       setError(errorMsg);
       throw err;
     } finally {
@@ -100,20 +104,17 @@ export const ExchangesProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       const res = await updateExchangeRequest(id, exchangeData);
-      
+
       // Actualizar en la lista de mis trueques
-      setMyExchanges(
-        myExchanges.map((ex) => (ex._id === id ? res.data : ex))
-      );
-      
+      setMyExchanges(myExchanges.map((ex) => (ex._id === id ? res.data : ex)));
+
       // Actualizar en la lista general si existe
-      setExchanges(
-        exchanges.map((ex) => (ex._id === id ? res.data : ex))
-      );
-      
+      setExchanges(exchanges.map((ex) => (ex._id === id ? res.data : ex)));
+
       return res.data;
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al actualizar el trueque";
+      const errorMsg =
+        err.response?.data?.message || "Error al actualizar el trueque";
       setError(errorMsg);
       throw err;
     } finally {
@@ -127,16 +128,17 @@ export const ExchangesProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       await deleteExchangeRequest(id);
-      
+
       // Eliminar de la lista de mis trueques
       setMyExchanges(myExchanges.filter((ex) => ex._id !== id));
-      
+
       // Eliminar de la lista general
       setExchanges(exchanges.filter((ex) => ex._id !== id));
-      
+
       return true;
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al eliminar el trueque";
+      const errorMsg =
+        err.response?.data?.message || "Error al eliminar el trueque";
       setError(errorMsg);
       throw err;
     } finally {
@@ -150,15 +152,14 @@ export const ExchangesProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       const res = await updateExchangeStatusRequest(id, status);
-      
+
       // Actualizar en la lista de mis trueques
-      setMyExchanges(
-        myExchanges.map((ex) => (ex._id === id ? res.data : ex))
-      );
-      
+      setMyExchanges(myExchanges.map((ex) => (ex._id === id ? res.data : ex)));
+
       return res.data;
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al actualizar el estado";
+      const errorMsg =
+        err.response?.data?.message || "Error al actualizar el estado";
       setError(errorMsg);
       throw err;
     } finally {

@@ -38,12 +38,15 @@ function App() {
                 {/* Rutas protegidas - Dashboard del sistema */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/membership" element={<MembershipDashboard />} />
-                  
+
                   {/* Rutas de Trueques */}
                   <Route path="/exchanges" element={<ExchangesListPage />} />
-                  <Route path="/create-exchange" element={<CreateExchangePage />} />
+                  <Route
+                    path="/create-exchange"
+                    element={<CreateExchangePage />}
+                  />
                   <Route path="/my-exchanges" element={<MyExchangesPage />} />
-                  
+
                   <Route
                     path="/dashboard"
                     element={

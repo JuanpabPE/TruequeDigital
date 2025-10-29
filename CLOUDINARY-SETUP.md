@@ -48,6 +48,7 @@ CLOUDINARY_API_SECRET=AbCdEfGhIjKlMnOpQrStUvWxYz
 ## ✅ Paso 5: Probar
 
 1. Reinicia tu servidor local:
+
    ```bash
    npm run dev
    ```
@@ -70,14 +71,17 @@ CLOUDINARY_API_SECRET=AbCdEfGhIjKlMnOpQrStUvWxYz
 ## 🔧 Troubleshooting
 
 ### Error: "Invalid credentials"
+
 - Verifica que copiaste bien las 3 credenciales
 - Asegúrate de NO tener espacios extras
 
 ### Error: "Upload failed"
+
 - Verifica que la imagen sea menor a 5MB
 - Solo se permiten: JPG, PNG, GIF, WEBP
 
 ### Las imágenes no se ven
+
 - Abre DevTools (F12) → Console
 - Busca errores
 - Verifica que las credenciales estén en Railway

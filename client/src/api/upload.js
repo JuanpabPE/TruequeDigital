@@ -4,7 +4,7 @@ import axios from "./axios.js";
 export const uploadImageRequest = (file) => {
   const formData = new FormData();
   formData.append("image", file);
-  
+
   return axios.post("/upload/image", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -15,11 +15,11 @@ export const uploadImageRequest = (file) => {
 // Subir múltiples imágenes
 export const uploadImagesRequest = (files) => {
   const formData = new FormData();
-  
+
   files.forEach((file) => {
     formData.append("images", file);
   });
-  
+
   return axios.post("/upload/images", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
