@@ -16,6 +16,8 @@ import CreateExchangePage from "./pages/CreateExchangePage";
 import ExchangesListPage from "./pages/ExchangesListPage";
 import MyExchangesPage from "./pages/MyExchangesPage";
 import ExchangeDetailPage from "./pages/ExchangeDetailPage";
+import MatchesPage from "./pages/MatchesPage";
+import MatchDetailPage from "./pages/MatchDetailPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Navbar from "./components/Navbar";
 
@@ -50,6 +52,10 @@ function App() {
                     element={<CreateExchangePage />}
                   />
                   <Route path="/my-exchanges" element={<MyExchangesPage />} />
+
+                  {/* Rutas de Matches */}
+                  <Route path="/matches" element={<MatchesPage />} />
+                  <Route path="/matches/:id" element={<MatchDetailPage />} />
 
                   <Route
                     path="/dashboard"

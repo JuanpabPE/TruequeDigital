@@ -1,8 +1,23 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useMatches } from "../context/MatchContext";
+import { useEffect } from "react";
 
 function Navbar() {
   const { isAuthenticated, logout, user } = useAuth();
+  const { notificationsCount, getNotificationsCount } = useMatches();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getNotificationsCount();
+      // Actualizar cada 30 segundos
+      const interval = setInterval(() => {
+        getNotificationsCount();
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
 
   return (
     <nav className="bg-zinc-700 my-3 flex justify-between py-5 px-10 rounded-lg">
@@ -26,6 +41,21 @@ function Navbar() {
                 className="hover:text-emerald-400 transition"
               >
                 Mis Trueques
+              </Link>
+            </li>
+            <li className="relative">
+              <Link
+                to="/matches"
+                className="hover:text-purple-400 transition flex items-center gap-1"
+              >
+                Matches
+                {notificationsCount.total > 0 && (
+                  <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.25rem] text-center">
+                    {notificationsCount.total > 99
+                      ? "99+"
+                      : notificationsCount.total}
+                  </span>
+                )}
               </Link>
             </li>
             <li>
