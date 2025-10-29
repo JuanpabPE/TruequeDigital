@@ -24,6 +24,7 @@ function MatchDetailPage() {
     notes: "",
   });
   const [savingMeeting, setSavingMeeting] = useState(false);
+  const [isEditingMeeting, setIsEditingMeeting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -32,8 +33,9 @@ function MatchDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    if (currentMatch?.meetingDetails) {
-      setMeetingForm({
+    // Solo actualizar el formulario si NO está editando
+    if (currentMatch?.meetingDetails && !isEditingMeeting) {
+      const newForm = {
         date: currentMatch.meetingDetails.date
           ? new Date(currentMatch.meetingDetails.date)
               .toISOString()
@@ -41,9 +43,14 @@ function MatchDetailPage() {
           : "",
         location: currentMatch.meetingDetails.location || "",
         notes: currentMatch.meetingDetails.notes || "",
-      });
+      };
+      
+      // Solo actualizar si realmente cambió (comparación profunda)
+      if (JSON.stringify(newForm) !== JSON.stringify(meetingForm)) {
+        setMeetingForm(newForm);
+      }
     }
-  }, [currentMatch?.meetingDetails]); // Solo actualizar cuando cambien meetingDetails, NO cuando cambien mensajes
+  }, [currentMatch?.meetingDetails, isEditingMeeting]);
 
   const loadMatch = async () => {
     try {
@@ -63,6 +70,7 @@ function MatchDetailPage() {
 
     try {
       setSavingMeeting(true);
+      setIsEditingMeeting(false); // Ya no está editando
       await updateMeetingDetails(id, meetingForm);
       alert("Detalles del encuentro actualizados");
     } catch (error) {
@@ -71,6 +79,14 @@ function MatchDetailPage() {
     } finally {
       setSavingMeeting(false);
     }
+  };
+
+  const handleMeetingFormChange = (field, value) => {
+    setIsEditingMeeting(true); // Marcar que está editando
+    setMeetingForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleCompleteMatch = async () => {
@@ -341,9 +357,7 @@ function MatchDetailPage() {
                     <input
                       type="datetime-local"
                       value={meetingForm.date}
-                      onChange={(e) =>
-                        setMeetingForm({ ...meetingForm, date: e.target.value })
-                      }
+                      onChange={(e) => handleMeetingFormChange("date", e.target.value)}
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                     />
                   </div>
@@ -355,12 +369,7 @@ function MatchDetailPage() {
                     <input
                       type="text"
                       value={meetingForm.location}
-                      onChange={(e) =>
-                        setMeetingForm({
-                          ...meetingForm,
-                          location: e.target.value,
-                        })
-                      }
+                      onChange={(e) => handleMeetingFormChange("location", e.target.value)}
                       placeholder="Ej: Plaza de Armas, Starbucks Av. Larco..."
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 placeholder-gray-400"
                     />
@@ -372,12 +381,7 @@ function MatchDetailPage() {
                     </label>
                     <textarea
                       value={meetingForm.notes}
-                      onChange={(e) =>
-                        setMeetingForm({
-                          ...meetingForm,
-                          notes: e.target.value,
-                        })
-                      }
+                      onChange={(e) => handleMeetingFormChange("notes", e.target.value)}
                       placeholder="Detalles adicionales sobre el encuentro..."
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-400"
                       rows="3"
