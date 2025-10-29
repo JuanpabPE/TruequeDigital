@@ -13,6 +13,7 @@ import {
   updateMeetingDetails,
   completeMatch,
   getNotificationsCount,
+  deleteMatch,
 } from "../controllers/matches.controller.js";
 
 const router = Router();
@@ -53,5 +54,8 @@ router.put("/:id/meeting", updateMeetingDetails);
 
 // Marcar match como completado
 router.put("/:id/complete", completeMatch);
+
+// Eliminar match (solo si está rechazado, cancelado o completado)
+router.delete("/:id", deleteMatch);
 
 export default router;

@@ -11,6 +11,7 @@ import {
   updateMeetingDetailsRequest,
   completeMatchRequest,
   getNotificationsCountRequest,
+  deleteMatchRequest,
 } from "../api/matches.js";
 
 const MatchContext = createContext();
@@ -307,6 +308,35 @@ export function MatchProvider({ children }) {
     }
   };
 
+  // Eliminar match
+  const deleteMatch = async (matchId) => {
+    try {
+      setLoading(true);
+      setErrors([]);
+      await deleteMatchRequest(matchId);
+      // Eliminar de las listas
+      setSentMatches((prev) => prev.filter((match) => match._id !== matchId));
+      setReceivedMatches((prev) =>
+        prev.filter((match) => match._id !== matchId)
+      );
+      // Si es el match actual, limpiarlo
+      if (currentMatch?._id === matchId) {
+        setCurrentMatch(null);
+      }
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar match:", error);
+      setErrors(
+        error.response?.data?.message
+          ? [error.response.data.message]
+          : ["Error al eliminar match"]
+      );
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Limpiar errores
   const clearErrors = () => {
     setErrors([]);
@@ -333,6 +363,7 @@ export function MatchProvider({ children }) {
         updateMeetingDetails,
         completeMatch,
         getNotificationsCount,
+        deleteMatch,
         clearErrors,
       }}
     >

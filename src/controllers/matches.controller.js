@@ -620,3 +620,43 @@ export const getNotificationsCount = async (req, res) => {
       .json({ message: "Error al obtener contador de notificaciones" });
   }
 };
+
+// Eliminar match (solo si está rechazado, cancelado o completado)
+export const deleteMatch = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const match = await Match.findById(id);
+
+    if (!match) {
+      return res.status(404).json({ message: "Match no encontrado" });
+    }
+
+    // Verificar que el usuario sea parte del match
+    const isParticipant =
+      match.requester.toString() === req.user.id ||
+      match.requestedUser.toString() === req.user.id;
+
+    if (!isParticipant) {
+      return res
+        .status(403)
+        .json({ message: "No tienes permiso para eliminar este match" });
+    }
+
+    // Solo se pueden eliminar matches que no están activos
+    if (match.status === "pending" || match.status === "accepted") {
+      return res.status(400).json({
+        message:
+          "No puedes eliminar un match activo. Primero cancélalo o recházalo.",
+      });
+    }
+
+    // Eliminar el match
+    await Match.findByIdAndDelete(id);
+
+    res.json({ message: "Match eliminado exitosamente" });
+  } catch (error) {
+    console.error("Error al eliminar match:", error);
+    res.status(500).json({ message: "Error al eliminar match" });
+  }
+};

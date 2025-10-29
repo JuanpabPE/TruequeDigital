@@ -12,6 +12,7 @@ function MatchesPage() {
     acceptMatch,
     rejectMatch,
     cancelMatch,
+    deleteMatch,
     loading,
   } = useMatches();
 
@@ -25,14 +26,16 @@ function MatchesPage() {
     loadMatches();
   }, []);
 
-  // Polling: Recargar matches cada 10 segundos
+  // Polling silencioso: Recargar matches cada 15 segundos sin loading state
   useEffect(() => {
     const interval = setInterval(() => {
       // Solo recargar si la pestaña está visible
       if (!document.hidden) {
-        loadMatches();
+        // Llamar directamente a las funciones sin mostrar loading
+        getSentMatches();
+        getReceivedMatches();
       }
-    }, 10000); // 10 segundos
+    }, 15000); // 15 segundos (menos frecuente)
 
     return () => clearInterval(interval);
   }, []);
@@ -96,6 +99,34 @@ function MatchesPage() {
       alert("Solicitud cancelada");
     } catch (error) {
       console.error("Error al cancelar:", error);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDelete = async (matchId, e) => {
+    // Prevenir navegación al match
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (
+      !confirm(
+        "¿Eliminar este match? Esta acción no se puede deshacer. Solo se pueden eliminar matches completados, rechazados o cancelados."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setActionLoading(true);
+      await deleteMatch(matchId);
+      alert("Match eliminado");
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      alert(
+        error.response?.data?.message ||
+          "No se pudo eliminar el match. Solo se pueden eliminar matches completados, rechazados o cancelados."
+      );
     } finally {
       setActionLoading(false);
     }
@@ -261,7 +292,22 @@ function MatchesPage() {
                           </p>
                         </div>
                       </div>
-                      {getStatusBadge(match.status)}
+                      <div className="flex items-center gap-2">
+                        {getStatusBadge(match.status)}
+                        {/* Botón de eliminar para matches inactivos */}
+                        {(match.status === "rejected" ||
+                          match.status === "cancelled" ||
+                          match.status === "completed") && (
+                          <button
+                            onClick={(e) => handleDelete(match._id, e)}
+                            disabled={actionLoading}
+                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                            title="Eliminar match"
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

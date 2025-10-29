@@ -39,3 +39,6 @@ export const completeMatchRequest = (id) =>
 // Obtener contador de notificaciones
 export const getNotificationsCountRequest = () =>
   axios.get("/matches/notifications/count");
+
+// Eliminar match
+export const deleteMatchRequest = (id) => axios.delete(`/matches/${id}`);
