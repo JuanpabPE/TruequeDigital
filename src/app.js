@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
 import taskRoutes from "./routes/tasks.routes.js";
+import membershipRoutes from "./routes/membership.routes.js";
 import { FRONTEND_URL } from "./config.js";
 
 const app = express();
@@ -19,4 +20,5 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api", authRoutes);
 app.use("/api", taskRoutes);
+app.use("/api", membershipRoutes);
 export default app;
