@@ -4,6 +4,10 @@ import User from "../models/user.model.js";
 // Crear nuevo trueque
 export const createExchange = async (req, res) => {
   try {
+    console.log("📝 ===== CREATE EXCHANGE REQUEST =====");
+    console.log("👤 User ID:", req.user?.id);
+    console.log("📦 Request body:", JSON.stringify(req.body, null, 2));
+    
     const {
       title,
       description,
@@ -20,6 +24,7 @@ export const createExchange = async (req, res) => {
     console.log("✨ Creating exchange for user:", req.user.id);
 
     // El middleware requireActiveMembership ya verificó la membresía activa
+    console.log("📋 Creating exchange object...");
     const newExchange = new Exchange({
       user: req.user.id,
       title,
@@ -39,6 +44,7 @@ export const createExchange = async (req, res) => {
       status: "disponible", // Estado inicial en español
     });
 
+    console.log("💾 Saving exchange...");
     const savedExchange = await newExchange.save();
     console.log(
       "✅ Exchange created:",
@@ -47,13 +53,16 @@ export const createExchange = async (req, res) => {
       req.user.id
     );
 
+    console.log("🔍 Populating exchange...");
     const populatedExchange = await Exchange.findById(
       savedExchange._id
     ).populate("user", "username email university averageRating");
 
+    console.log("✅ Exchange populated successfully");
     res.status(201).json(populatedExchange);
   } catch (error) {
-    console.error("Error creating exchange:", error);
+    console.error("❌ ERROR creating exchange:", error);
+    console.error("❌ Error stack:", error.stack);
     res
       .status(500)
       .json({ message: "Error al crear el trueque", error: error.message });
