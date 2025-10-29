@@ -30,8 +30,13 @@ export function TaskProvider({ children }) {
   };
 
   const createTask = async (task) => {
-    const res = await createTaskRequest(task);
-    console.log(res);
+    try {
+      const res = await createTaskRequest(task);
+      setTasks([...tasks, res.data]);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const deleteTask = async (id) => {
@@ -54,7 +59,8 @@ export function TaskProvider({ children }) {
 
   const updateTask = async (id, task) => {
     try {
-      await updateTaskRequest(id, task);
+      const res = await updateTaskRequest(id, task);
+      setTasks(tasks.map((t) => (t._id === id ? res.data : t)));
     } catch (error) {
       console.error(error);
     }
