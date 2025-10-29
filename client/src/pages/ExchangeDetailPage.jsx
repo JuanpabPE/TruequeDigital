@@ -19,6 +19,37 @@ function ExchangeDetailPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [requesting, setRequesting] = useState(false);
 
+  const getConditionLabel = (condition) => {
+    const labels = {
+      new: "Nuevo",
+      "like-new": "Como nuevo",
+      good: "Buen estado",
+      fair: "Estado regular",
+      poor: "Necesita reparación",
+    };
+    return labels[condition] || condition;
+  };
+
+  const getStatusLabel = (status) => {
+    const labels = {
+      disponible: "Disponible",
+      "en-progreso": "En progreso",
+      intercambiado: "Intercambiado",
+      pausado: "Pausado",
+      cancelado: "Cancelado",
+      // Compatibilidad con estados antiguos en inglés
+      available: "Disponible",
+      "in-progress": "En progreso",
+      completed: "Intercambiado",
+      cancelled: "Cancelado",
+    };
+    return labels[status] || status;
+  };
+
+  const isAvailable = (status) => {
+    return status === "disponible" || status === "available";
+  };
+
   useEffect(() => {
     if (id) {
       getExchangeById(id);
@@ -36,9 +67,13 @@ function ExchangeDetailPage() {
           }
         );
         const data = await res.json();
-        // Solo mostrar exchanges disponibles
+        // Solo mostrar exchanges disponibles (español e inglés por compatibilidad)
         setMyExchanges(
-          data.filter((ex) => ex.status === "disponible" && ex._id !== id)
+          data.filter(
+            (ex) =>
+              (ex.status === "disponible" || ex.status === "available") &&
+              ex._id !== id
+          )
         );
       } catch (error) {
         console.error("Error al cargar mis exchanges:", error);
@@ -151,11 +186,11 @@ function ExchangeDetailPage() {
           {/* Galería de imágenes */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             {currentExchange.images && currentExchange.images.length > 0 ? (
-              <div className="relative">
+              <div className="relative bg-gray-100">
                 <img
                   src={currentExchange.images[currentImageIndex]}
                   alt={currentExchange.title}
-                  className="w-full h-96 object-cover"
+                  className="w-full h-96 object-contain"
                 />
 
                 {currentExchange.images.length > 1 && (
@@ -218,18 +253,15 @@ function ExchangeDetailPage() {
                 </h1>
                 <span
                   className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                    currentExchange.status === "disponible"
+                    isAvailable(currentExchange.status)
                       ? "bg-green-100 text-green-700"
-                      : currentExchange.status === "intercambiado"
+                      : currentExchange.status === "intercambiado" ||
+                        currentExchange.status === "completed"
                       ? "bg-blue-100 text-blue-700"
                       : "bg-gray-100 text-gray-700"
                   }`}
                 >
-                  {currentExchange.status === "disponible"
-                    ? "Disponible"
-                    : currentExchange.status === "intercambiado"
-                    ? "Intercambiado"
-                    : "Pausado"}
+                  {getStatusLabel(currentExchange.status)}
                 </span>
               </div>
 
@@ -270,7 +302,7 @@ function ExchangeDetailPage() {
                   <div>
                     <p className="text-sm text-purple-600">Condición</p>
                     <p className="font-medium text-purple-900">
-                      {currentExchange.offering?.condition}
+                      {getConditionLabel(currentExchange.offering?.condition)}
                     </p>
                   </div>
                   <div className="col-span-2">
@@ -316,7 +348,7 @@ function ExchangeDetailPage() {
             </div>
 
             {/* Botón de acción */}
-            {!isOwner && currentExchange.status === "disponible" && (
+            {!isOwner && isAvailable(currentExchange.status) && (
               <button
                 onClick={() => setShowMatchModal(true)}
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl"
@@ -325,26 +357,30 @@ function ExchangeDetailPage() {
               </button>
             )}
 
-            {!isOwner && currentExchange.status !== "disponible" && (
+            {!isOwner && !isAvailable(currentExchange.status) && (
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
                 <p className="text-gray-800 font-medium">
                   Este trueque no está disponible
                 </p>
                 <p className="text-sm text-gray-600">
-                  Estado actual: {currentExchange.status}
+                  Estado actual: {getStatusLabel(currentExchange.status)}
                 </p>
               </div>
             )}
 
             {isOwner && (
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-                <p className="text-blue-800 font-medium">Este es tu exchange</p>
-                <Link
-                  to="/my-exchanges"
-                  className="text-blue-600 hover:text-blue-700 text-sm"
-                >
-                  Ver mis exchanges →
-                </Link>
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                <p className="text-emerald-800 font-medium mb-2 text-center">
+                  📝 Esta es tu publicación
+                </p>
+                <div className="flex gap-2">
+                  <Link
+                    to="/my-exchanges"
+                    className="flex-1 bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 transition text-center"
+                  >
+                    Ver todos mis trueques
+                  </Link>
+                </div>
               </div>
             )}
           </div>
