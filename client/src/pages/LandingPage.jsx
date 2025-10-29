@@ -451,7 +451,9 @@ function LandingPage() {
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "Intercambié mis maquetas del semestre pasado por materiales nuevos y un monitor. La comunidad es súper respetuosa y rápida para coordinar."
+                  "Intercambié mis maquetas del semestre pasado por materiales
+                  nuevos y un monitor. La comunidad es súper respetuosa y rápida
+                  para coordinar."
                 </p>
               </div>
 
@@ -480,7 +482,9 @@ function LandingPage() {
                     VT
                   </div>
                   <div className="ml-3">
-                    <div className="font-bold text-gray-900">Valeria Torres</div>
+                    <div className="font-bold text-gray-900">
+                      Valeria Torres
+                    </div>
                     <div className="text-sm text-gray-600">
                       Estudiante de Psicología - UPCH
                     </div>
@@ -488,8 +492,8 @@ function LandingPage() {
                 </div>
                 <p className="text-gray-700">
                   "En una semana logré intercambiar mis libros impresos por
-                  sesiones de tutoría. La suscripción es mínima comparada con todo
-                  lo que recibes."
+                  sesiones de tutoría. La suscripción es mínima comparada con
+                  todo lo que recibes."
                 </p>
               </div>
 
@@ -499,7 +503,9 @@ function LandingPage() {
                     DM
                   </div>
                   <div className="ml-3">
-                    <div className="font-bold text-gray-900">Diego Montalvo</div>
+                    <div className="font-bold text-gray-900">
+                      Diego Montalvo
+                    </div>
                     <div className="text-sm text-gray-600">
                       Estudiante de Comunicación - ULIMA
                     </div>
@@ -507,8 +513,8 @@ function LandingPage() {
                 </div>
                 <p className="text-gray-700">
                   "Me encanta la curaduria del match. Recibí alertas con matches
-                  que realmente necesito. Es como un marketplace inteligente pero
-                  sin gastar dinero."
+                  que realmente necesito. Es como un marketplace inteligente
+                  pero sin gastar dinero."
                 </p>
               </div>
 
@@ -526,7 +532,9 @@ function LandingPage() {
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "Intercambié mis maquetas del semestre pasado por materiales nuevos y un monitor. La comunidad es súper respetuosa y rápida para coordinar."
+                  "Intercambié mis maquetas del semestre pasado por materiales
+                  nuevos y un monitor. La comunidad es súper respetuosa y rápida
+                  para coordinar."
                 </p>
               </div>
 
@@ -555,7 +563,9 @@ function LandingPage() {
                     VT
                   </div>
                   <div className="ml-3">
-                    <div className="font-bold text-gray-900">Valeria Torres</div>
+                    <div className="font-bold text-gray-900">
+                      Valeria Torres
+                    </div>
                     <div className="text-sm text-gray-600">
                       Estudiante de Psicología - UPCH
                     </div>
@@ -563,8 +573,8 @@ function LandingPage() {
                 </div>
                 <p className="text-gray-700">
                   "En una semana logré intercambiar mis libros impresos por
-                  sesiones de tutoría. La suscripción es mínima comparada con todo
-                  lo que recibes."
+                  sesiones de tutoría. La suscripción es mínima comparada con
+                  todo lo que recibes."
                 </p>
               </div>
 
@@ -574,7 +584,9 @@ function LandingPage() {
                     DM
                   </div>
                   <div className="ml-3">
-                    <div className="font-bold text-gray-900">Diego Montalvo</div>
+                    <div className="font-bold text-gray-900">
+                      Diego Montalvo
+                    </div>
                     <div className="text-sm text-gray-600">
                       Estudiante de Comunicación - ULIMA
                     </div>
@@ -582,8 +594,8 @@ function LandingPage() {
                 </div>
                 <p className="text-gray-700">
                   "Me encanta la curaduria del match. Recibí alertas con matches
-                  que realmente necesito. Es como un marketplace inteligente pero
-                  sin gastar dinero."
+                  que realmente necesito. Es como un marketplace inteligente
+                  pero sin gastar dinero."
                 </p>
               </div>
             </div>

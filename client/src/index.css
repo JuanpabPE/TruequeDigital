@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 body {
-    background: #202020;
-    color: white;
-    
+  background: #202020;
+  color: white;
 }
 
 /* Animación de carrusel infinito para testimonios */
