@@ -107,9 +107,8 @@ export const getActiveMembership = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     if (!membership) {
-      return res
-        .status(404)
-        .json({ message: "No tienes una membresía activa" });
+      // Devolver 200 con null en lugar de 404
+      return res.json(null);
     }
 
     // Verificar si está vencida
@@ -122,7 +121,8 @@ export const getActiveMembership = async (req, res) => {
         activeMembership: null,
       });
 
-      return res.status(404).json({ message: "Tu membresía ha expirado" });
+      // Devolver 200 con null en lugar de 404
+      return res.json(null);
     }
 
     res.json(membership);
