@@ -17,6 +17,8 @@ export const createExchange = async (req, res) => {
       images,
     } = req.body;
 
+    console.log("✨ Creating exchange for user:", req.user.id);
+
     // El middleware requireActiveMembership ya verificó la membresía activa
     const newExchange = new Exchange({
       user: req.user.id,
@@ -38,6 +40,8 @@ export const createExchange = async (req, res) => {
     });
 
     const savedExchange = await newExchange.save();
+    console.log("✅ Exchange created:", savedExchange._id, "by user:", req.user.id);
+    
     const populatedExchange = await Exchange.findById(
       savedExchange._id
     ).populate("user", "username email university averageRating");
@@ -64,7 +68,14 @@ export const getExchanges = async (req, res) => {
       location,
     } = req.query;
 
-    let query = { status: "available" };
+    // Solo mostrar exchanges disponibles y NO del usuario actual
+    let query = { 
+      $or: [
+        { status: "disponible" },
+        { status: "available" } // Compatibilidad con estados antiguos
+      ],
+      user: { $ne: req.user.id } // Excluir exchanges propios
+    };
 
     // Filtros
     if (category) {
@@ -101,9 +112,14 @@ export const getExchanges = async (req, res) => {
       ];
     }
 
+    console.log("🔍 getExchanges - Query:", JSON.stringify(query, null, 2));
+    console.log("👤 Current user ID:", req.user.id);
+
     const exchanges = await Exchange.find(query)
       .populate("user", "username email university averageRating profileImage")
       .sort({ createdAt: -1 });
+
+    console.log(`📦 Found ${exchanges.length} exchanges (excluding user's own)`);
 
     res.json(exchanges);
   } catch (error) {
@@ -140,10 +156,14 @@ export const getExchangeById = async (req, res) => {
 // Obtener mis trueques
 export const getMyExchanges = async (req, res) => {
   try {
+    console.log("🔍 getMyExchanges - User ID:", req.user.id);
+    
     const exchanges = await Exchange.find({ user: req.user.id })
       .populate("user", "username email university averageRating")
       .sort({ createdAt: -1 });
 
+    console.log(`📦 Found ${exchanges.length} exchanges for user ${req.user.id}`);
+    
     res.json(exchanges);
   } catch (error) {
     console.error("Error fetching my exchanges:", error);

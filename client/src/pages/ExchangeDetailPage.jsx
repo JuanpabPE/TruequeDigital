@@ -61,12 +61,25 @@ function ExchangeDetailPage() {
     const fetchMyExchanges = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/exchanges/my-exchanges`,
+          `${import.meta.env.VITE_API_URL}/my-exchanges`,
           {
             credentials: "include",
           }
         );
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
         const data = await res.json();
+        
+        // Asegurar que data es un array
+        if (!Array.isArray(data)) {
+          console.error("La respuesta no es un array:", data);
+          setMyExchanges([]);
+          return;
+        }
+        
         // Solo mostrar exchanges disponibles (español e inglés por compatibilidad)
         setMyExchanges(
           data.filter(
@@ -77,6 +90,7 @@ function ExchangeDetailPage() {
         );
       } catch (error) {
         console.error("Error al cargar mis exchanges:", error);
+        setMyExchanges([]);
       }
     };
 
