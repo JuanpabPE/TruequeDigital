@@ -43,7 +43,7 @@ function MatchDetailPage() {
         notes: currentMatch.meetingDetails.notes || "",
       });
     }
-  }, [currentMatch]);
+  }, [currentMatch?.meetingDetails]); // Solo actualizar cuando cambien meetingDetails, NO cuando cambien mensajes
 
   const loadMatch = async () => {
     try {

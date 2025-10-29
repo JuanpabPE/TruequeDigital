@@ -107,9 +107,13 @@ export function MatchProvider({ children }) {
   const refreshMessages = async (id) => {
     try {
       const res = await getMatchByIdRequest(id);
-      // Solo actualizar si hay cambios en los mensajes
-      if (res.data.messages.length !== currentMatch?.messages?.length) {
-        setCurrentMatch(res.data);
+      // Solo actualizar los mensajes, NO sobrescribir todo el match
+      if (currentMatch && res.data.messages.length !== currentMatch.messages?.length) {
+        setCurrentMatch((prev) => ({
+          ...prev,
+          messages: res.data.messages, // Solo actualizar mensajes
+          // Mantener todo lo demás igual
+        }));
       }
       return res.data;
     } catch (error) {
