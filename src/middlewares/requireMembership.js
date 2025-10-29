@@ -43,16 +43,10 @@ export const requireActiveMembership = async (req, res, next) => {
         return next();
       }
 
-      console.log("⚠️ No membership found, but allowing temporarily for debug");
-      // TEMPORAL: Permitir sin membresía para debug
-      return next();
-      
-      /* DESCOMENTAR CUANDO EL PROBLEMA ESTÉ SOLUCIONADO
       return res.status(403).json({
         message: "Necesitas una membresía activa para realizar esta acción",
         requiresMembership: true,
       });
-      */
     }
 
     // Verificar si la membresía no está expirada
@@ -67,17 +61,11 @@ export const requireActiveMembership = async (req, res, next) => {
       user.activeMembership = null;
       await user.save();
 
-      console.log("⚠️ Membership expired, but allowing temporarily for debug");
-      // TEMPORAL: Permitir sin membresía para debug
-      return next();
-
-      /* DESCOMENTAR CUANDO EL PROBLEMA ESTÉ SOLUCIONADO
       return res.status(403).json({
         message: "Tu membresía ha expirado. Renueva para continuar",
         requiresMembership: true,
         expired: true,
       });
-      */
     }
 
     console.log("✅ Membership valid");

@@ -62,7 +62,23 @@ export const createExchange = async (req, res) => {
     res.status(201).json(populatedExchange);
   } catch (error) {
     console.error("❌ ERROR creating exchange:", error);
-    console.error("❌ Error stack:", error.stack);
+    console.error("❌ Error name:", error.name);
+    console.error("❌ Error message:", error.message);
+    
+    // Manejar errores de validación de Mongoose
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map(err => ({
+        field: err.path,
+        message: err.message,
+        value: err.value,
+      }));
+      console.error("❌ Validation errors:", validationErrors);
+      return res.status(400).json({
+        message: "Error de validación",
+        errors: validationErrors,
+      });
+    }
+    
     res
       .status(500)
       .json({ message: "Error al crear el trueque", error: error.message });
