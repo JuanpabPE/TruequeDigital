@@ -64,13 +64,25 @@ async function verificarMembresia() {
         console.log(`   Plan: ${membresia.plan}`);
         console.log(`   Estado: ${membresia.status}`);
         console.log(
-          `   Fecha inicio: ${membresia.startDate ? membresia.startDate.toLocaleString() : "No definida"}`
+          `   Fecha inicio: ${
+            membresia.startDate
+              ? membresia.startDate.toLocaleString()
+              : "No definida"
+          }`
         );
         console.log(
-          `   Fecha fin: ${membresia.endDate ? membresia.endDate.toLocaleString() : "No definida"}`
+          `   Fecha fin: ${
+            membresia.endDate
+              ? membresia.endDate.toLocaleString()
+              : "No definida"
+          }`
         );
         console.log(
-          `   Creada: ${membresia.createdAt ? membresia.createdAt.toLocaleString() : "No definida"}`
+          `   Creada: ${
+            membresia.createdAt
+              ? membresia.createdAt.toLocaleString()
+              : "No definida"
+          }`
         );
 
         if (membresia.status === "active") {

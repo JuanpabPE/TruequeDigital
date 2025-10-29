@@ -227,7 +227,7 @@ export const renewMembership = async (req, res) => {
 export const autoApproveMembership = async (req, res) => {
   try {
     console.log("🔧 AUTO-APPROVE - User ID:", req.user.id);
-    
+
     // Buscar la membresía pendiente más reciente del usuario
     const pendingMembership = await Membership.findOne({
       user: req.user.id,
@@ -235,9 +235,9 @@ export const autoApproveMembership = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     if (!pendingMembership) {
-      return res.json({ 
+      return res.json({
         message: "No tienes membresías pendientes",
-        hasPending: false 
+        hasPending: false,
       });
     }
 
@@ -247,7 +247,7 @@ export const autoApproveMembership = async (req, res) => {
     pendingMembership.status = "active";
     const now = new Date();
     pendingMembership.startDate = now;
-    
+
     // Calcular fecha de fin (30 días)
     const endDate = new Date(now);
     endDate.setDate(endDate.getDate() + 30);
@@ -265,7 +265,7 @@ export const autoApproveMembership = async (req, res) => {
     res.json({
       message: "Membresía aprobada automáticamente",
       membership: pendingMembership,
-      approved: true
+      approved: true,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

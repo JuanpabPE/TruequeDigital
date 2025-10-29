@@ -37,6 +37,7 @@ export const register = async (req, res) => {
       email: userSaved.email,
       createAt: userSaved.createdAt,
       updateAt: userSaved.updatedAt,
+      token, // Enviar token también en el response para localStorage
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -74,6 +75,7 @@ export const login = async (req, res) => {
       email: userFound.email,
       createAt: userFound.createdAt,
       updateAt: userFound.updatedAt,
+      token, // Enviar token también en el response para localStorage
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

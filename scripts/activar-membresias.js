@@ -94,7 +94,9 @@ async function activarMembresias() {
       });
 
       console.log(`✅ Membresía activada exitosamente`);
-      console.log(`📅 Fecha inicio: ${membresia.startDate.toLocaleDateString()}`);
+      console.log(
+        `📅 Fecha inicio: ${membresia.startDate.toLocaleDateString()}`
+      );
       console.log(`📅 Fecha fin: ${membresia.endDate.toLocaleDateString()}`);
       console.log("─".repeat(50) + "\n");
     }

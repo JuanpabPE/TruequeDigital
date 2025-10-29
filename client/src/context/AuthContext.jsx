@@ -21,6 +21,13 @@ export const AuthProvider = ({ children }) => {
       console.log(user);
       const res = await registerRequest(user);
       console.log(res.data);
+      
+      // Guardar token en localStorage si viene en la respuesta
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        console.log("💾 Token guardado en localStorage");
+      }
+      
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -37,6 +44,13 @@ export const AuthProvider = ({ children }) => {
       console.log("✅ LOGIN RESPONSE:", res.data);
       console.log("👤 User ID:", res.data.id);
       console.log("📛 Username:", res.data.username);
+      
+      // Guardar token en localStorage si viene en la respuesta
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        console.log("💾 Token guardado en localStorage");
+      }
+      
       setIsAuthenticated(true);
       setUser(res.data);
     } catch (error) {
@@ -49,6 +63,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     Cookies.remove("token");
+    localStorage.removeItem("token"); // Remover también de localStorage
     setIsAuthenticated(false);
     setUser(null);
   };
