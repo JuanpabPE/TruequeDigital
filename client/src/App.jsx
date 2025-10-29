@@ -6,35 +6,72 @@ import LoginPage from "./pages/LoginPage";
 import TasksPage from "./pages/TasksPage";
 import TaskFormPage from "./pages/TaskFormPage";
 import ProfilePage from "./pages/ProfilePage";
-import HomePage from "./pages/HomePage";
+import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Navbar from "./components/Navbar";
+
 function App() {
   return (
     <AuthProvider>
       <TaskProvider>
         <BrowserRouter>
-          <main className="container mx-auto px-10">
-            <Navbar></Navbar>
-            <Routes>
-              <Route path="/" element={<HomePage></HomePage>} />
-              <Route path="/login" element={<LoginPage></LoginPage>} />
-              <Route path="/register" element={<RegisterPage></RegisterPage>} />
+          <Routes>
+            {/* Ruta pública - Landing Page sin navbar del sistema */}
+            <Route path="/" element={<LandingPage />} />
 
-              <Route element={<ProtectedRoute></ProtectedRoute>}>
-                <Route path="/tasks" element={<TasksPage></TasksPage>} />
-                <Route
-                  path="/add-task"
-                  element={<TaskFormPage></TaskFormPage>}
-                />
-                <Route
-                  path="/tasks/:id"
-                  element={<TaskFormPage></TaskFormPage>}
-                />
-                <Route path="/profile" element={<ProfilePage></ProfilePage>} />
-              </Route>
-            </Routes>
-          </main>
+            {/* Rutas de autenticación */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            {/* Rutas protegidas - Dashboard del sistema */}
+            <Route element={<ProtectedRoute />}>
+              <Route
+                path="/dashboard"
+                element={
+                  <main className="container mx-auto px-10">
+                    <Navbar />
+                    <TasksPage />
+                  </main>
+                }
+              />
+              <Route
+                path="/tasks"
+                element={
+                  <main className="container mx-auto px-10">
+                    <Navbar />
+                    <TasksPage />
+                  </main>
+                }
+              />
+              <Route
+                path="/add-task"
+                element={
+                  <main className="container mx-auto px-10">
+                    <Navbar />
+                    <TaskFormPage />
+                  </main>
+                }
+              />
+              <Route
+                path="/tasks/:id"
+                element={
+                  <main className="container mx-auto px-10">
+                    <Navbar />
+                    <TaskFormPage />
+                  </main>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <main className="container mx-auto px-10">
+                    <Navbar />
+                    <ProfilePage />
+                  </main>
+                }
+              />
+            </Route>
+          </Routes>
         </BrowserRouter>
       </TaskProvider>
     </AuthProvider>
