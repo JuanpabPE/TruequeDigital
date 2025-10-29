@@ -11,6 +11,9 @@ instance.interceptors.request.use(
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log("🔑 Enviando token en header Authorization");
+    } else {
+      console.warn("⚠️ No hay token en localStorage");
     }
     return config;
   },
