@@ -7,6 +7,7 @@ import taskRoutes from "./routes/tasks.routes.js";
 import membershipRoutes from "./routes/membership.routes.js";
 import exchangeRoutes from "./routes/exchanges.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import matchRoutes from "./routes/matches.routes.js";
 import { FRONTEND_URL } from "./config.js";
 
 const app = express();
@@ -25,4 +26,5 @@ app.use("/api", taskRoutes);
 app.use("/api", membershipRoutes);
 app.use("/api", exchangeRoutes);
 app.use("/api", uploadRoutes);
+app.use("/api/matches", matchRoutes);
 export default app;

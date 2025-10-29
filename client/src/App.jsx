@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { TaskProvider } from "./context/TasksContext";
 import { MembershipProvider } from "./context/MembershipContext";
 import { ExchangesProvider } from "./context/ExchangesContext";
+import { MatchProvider } from "./context/MatchContext";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import TasksPage from "./pages/TasksPage";
@@ -14,6 +15,7 @@ import MembershipDashboard from "./pages/MembershipDashboard";
 import CreateExchangePage from "./pages/CreateExchangePage";
 import ExchangesListPage from "./pages/ExchangesListPage";
 import MyExchangesPage from "./pages/MyExchangesPage";
+import ExchangeDetailPage from "./pages/ExchangeDetailPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Navbar from "./components/Navbar";
 
@@ -22,8 +24,9 @@ function App() {
     <AuthProvider>
       <MembershipProvider>
         <ExchangesProvider>
-          <TaskProvider>
-            <BrowserRouter>
+          <MatchProvider>
+            <TaskProvider>
+              <BrowserRouter>
               <Routes>
                 {/* Ruta pública - Landing Page sin navbar del sistema */}
                 <Route path="/" element={<LandingPage />} />
@@ -41,6 +44,7 @@ function App() {
 
                   {/* Rutas de Trueques */}
                   <Route path="/exchanges" element={<ExchangesListPage />} />
+                  <Route path="/exchanges/:id" element={<ExchangeDetailPage />} />
                   <Route
                     path="/create-exchange"
                     element={<CreateExchangePage />}
@@ -96,9 +100,10 @@ function App() {
               </Routes>
             </BrowserRouter>
           </TaskProvider>
-        </ExchangesProvider>
-      </MembershipProvider>
-    </AuthProvider>
+        </MatchProvider>
+      </ExchangesProvider>
+    </MembershipProvider>
+  </AuthProvider>
   );
 }
 
