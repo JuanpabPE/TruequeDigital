@@ -61,6 +61,7 @@ export const login = async (req, res) => {
 
     console.log("🔐 LOGIN - User:", userFound.username, "ID:", userFound._id);
     console.log("🍪 TOKEN CREATED for user ID:", userFound._id);
+    console.log("📤 Enviando token en response body para localStorage");
 
     res.cookie("token", token, {
       httpOnly: true,
