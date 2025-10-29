@@ -25,7 +25,8 @@ function TaskPage() {
             Hola, {user?.username || "Usuario"}
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            ¡Estás listo para empezar a intercambiar! Explora las opciones disponibles
+            ¡Estás listo para empezar a intercambiar! Explora las opciones
+            disponibles
           </p>
         </div>
 
@@ -144,9 +145,7 @@ function TaskPage() {
               <h3 className="text-xl font-bold text-gray-900">
                 Mis Publicaciones
               </h3>
-              <p className="text-gray-600">
-                Administra tus trueques activos
-              </p>
+              <p className="text-gray-600">Administra tus trueques activos</p>
             </div>
           </Link>
 
@@ -158,12 +157,8 @@ function TaskPage() {
               <span className="text-3xl">👑</span>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-900">
-                Mi Membresía
-              </h3>
-              <p className="text-gray-600">
-                Revisa tu plan y beneficios
-              </p>
+              <h3 className="text-xl font-bold text-gray-900">Mi Membresía</h3>
+              <p className="text-gray-600">Revisa tu plan y beneficios</p>
             </div>
           </Link>
         </div>

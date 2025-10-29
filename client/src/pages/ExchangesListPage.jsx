@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useExchanges } from "../context/ExchangesContext";
+import Navbar from "../components/Navbar";
 
 const CATEGORIES = [
   "Todos",
@@ -80,17 +81,19 @@ function ExchangesListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Trueques Disponibles
-          </h1>
-          <p className="text-gray-600">
-            Explora los trueques publicados por la comunidad
-          </p>
-        </div>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Trueques Disponibles
+            </h1>
+            <p className="text-gray-600">
+              Explora los trueques publicados por la comunidad
+            </p>
+          </div>
 
         {/* Filters */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
@@ -298,6 +301,7 @@ function ExchangesListPage() {
         )}
       </div>
     </div>
+    </>
   );
 }
 

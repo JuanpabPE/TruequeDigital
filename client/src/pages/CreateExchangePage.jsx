@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useExchanges } from "../context/ExchangesContext";
 import { useMembership } from "../context/MembershipContext";
 import { uploadImagesRequest } from "../api/upload";
+import Navbar from "../components/Navbar";
 
 const CATEGORIES = [
   "Electrónica",
@@ -144,17 +145,19 @@ function CreateExchangePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Publicar Trueque
-          </h1>
-          <p className="text-gray-600">
-            Completa la información de lo que ofreces y lo que buscas
-          </p>
-        </div>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-12 px-4">
+        <div className="max-w-3xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Publicar Trueque
+            </h1>
+            <p className="text-gray-600">
+              Completa la información de lo que ofreces y lo que buscas
+            </p>
+          </div>
 
         {/* Error Alert */}
         {(error || submitError) && (
@@ -467,6 +470,7 @@ function CreateExchangePage() {
         </form>
       </div>
     </div>
+    </>
   );
 }
 

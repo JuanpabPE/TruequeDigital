@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useExchanges } from "../context/ExchangesContext";
+import Navbar from "../components/Navbar";
 
 function MyExchangesPage() {
   const navigate = useNavigate();
@@ -94,25 +95,27 @@ function MyExchangesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              Mis Trueques
-            </h1>
-            <p className="text-gray-600">
-              Administra tus publicaciones activas
-            </p>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                Mis Trueques
+              </h1>
+              <p className="text-gray-600">
+                Administra tus publicaciones activas
+              </p>
+            </div>
+            <Link
+              to="/create-exchange"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition shadow-lg"
+            >
+              + Nuevo Trueque
+            </Link>
           </div>
-          <Link
-            to="/create-exchange"
-            className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition shadow-lg"
-          >
-            + Nuevo Trueque
-          </Link>
-        </div>
 
         {/* Loading */}
         {loading ? (
@@ -326,6 +329,7 @@ function MyExchangesPage() {
         )}
       </div>
     </div>
+    </>
   );
 }
 
