@@ -107,13 +107,18 @@ export function MatchProvider({ children }) {
   const refreshMessages = async (id) => {
     try {
       const res = await getMatchByIdRequest(id);
-      // Solo actualizar los mensajes, NO sobrescribir todo el match
-      if (currentMatch && res.data.messages.length !== currentMatch.messages?.length) {
-        setCurrentMatch((prev) => ({
-          ...prev,
-          messages: res.data.messages, // Solo actualizar mensajes
-          // Mantener todo lo demás igual
-        }));
+      // Actualizar mensajes Y meetingDetails si cambiaron
+      if (currentMatch) {
+        const messagesChanged = res.data.messages.length !== currentMatch.messages?.length;
+        const meetingChanged = JSON.stringify(res.data.meetingDetails) !== JSON.stringify(currentMatch.meetingDetails);
+        
+        if (messagesChanged || meetingChanged) {
+          setCurrentMatch((prev) => ({
+            ...prev,
+            messages: res.data.messages,
+            meetingDetails: res.data.meetingDetails,
+          }));
+        }
       }
       return res.data;
     } catch (error) {
@@ -235,9 +240,12 @@ export function MatchProvider({ children }) {
       setLoading(true);
       setErrors([]);
       const res = await updateMeetingDetailsRequest(matchId, details);
-      // Actualizar el match actual
+      // Actualizar solo meetingDetails, preservar el resto del match
       if (currentMatch?._id === matchId) {
-        setCurrentMatch(res.data);
+        setCurrentMatch((prev) => ({
+          ...prev,
+          meetingDetails: res.data.meetingDetails,
+        }));
       }
       return res.data;
     } catch (error) {

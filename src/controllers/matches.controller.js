@@ -384,7 +384,15 @@ export const updateMeetingDetails = async (req, res) => {
 
     await match.save();
 
-    res.json(match);
+    // Poblar datos completos antes de devolver
+    const populatedMatch = await Match.findById(match._id)
+      .populate("requester", "username email whatsapp")
+      .populate("requestedUser", "username email whatsapp")
+      .populate("exchangeOffered")
+      .populate("exchangeRequested")
+      .populate("messages.sender", "username");
+
+    res.json(populatedMatch);
   } catch (error) {
     console.error("Error al actualizar detalles del encuentro:", error);
     res
