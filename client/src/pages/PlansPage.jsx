@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMembership } from '../context/MembershipContext';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMembership } from "../context/MembershipContext";
+import { useAuth } from "../context/AuthContext";
 
 function PlansPage() {
   const { plans, loading, error, getPlans, createMembership } = useMembership();
@@ -17,7 +17,7 @@ function PlansPage() {
 
   const handleSelectPlan = (plan) => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     setSelectedPlan(plan);
@@ -31,12 +31,12 @@ function PlansPage() {
       setProcessing(true);
       await createMembership({
         plan: selectedPlan.id,
-        paymentMethod: 'whatsapp',
-        paymentProof: ''
+        paymentMethod: "whatsapp",
+        paymentProof: "",
       });
-      
+
       setShowPaymentModal(false);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
       alert(error.message);
@@ -65,7 +65,8 @@ function PlansPage() {
             Elige tu plan perfecto
           </h1>
           <p className="text-xl text-gray-600">
-            Todos los planes incluyen intercambios ilimitados y acceso completo a la plataforma
+            Todos los planes incluyen intercambios ilimitados y acceso completo
+            a la plataforma
           </p>
         </div>
 
@@ -82,7 +83,7 @@ function PlansPage() {
             <div
               key={plan.id}
               className={`bg-white rounded-2xl shadow-lg overflow-hidden ${
-                index === 0 ? 'border-2 border-emerald-500' : ''
+                index === 0 ? "border-2 border-emerald-500" : ""
               }`}
             >
               {index === 0 && (
@@ -90,7 +91,7 @@ function PlansPage() {
                   MÁS POPULAR
                 </div>
               )}
-              
+
               <div className="p-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
                   {plan.name}
@@ -127,8 +128,8 @@ function PlansPage() {
                   onClick={() => handleSelectPlan(plan)}
                   className={`w-full py-3 px-6 rounded-lg font-semibold transition ${
                     index === 0
-                      ? 'bg-emerald-500 text-white hover:bg-emerald-600'
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                      ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                      : "bg-gray-900 text-white hover:bg-gray-800"
                   }`}
                 >
                   Seleccionar plan
@@ -146,13 +147,13 @@ function PlansPage() {
                 Confirmar suscripción
               </h3>
               <p className="text-gray-600 mb-6">
-                Has seleccionado el <strong>{selectedPlan.name}</strong> por{' '}
+                Has seleccionado el <strong>{selectedPlan.name}</strong> por{" "}
                 <strong>S/{selectedPlan.price}</strong> al mes.
               </p>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                 <p className="text-sm text-yellow-800">
-                  <strong>Próximo paso:</strong> Realiza el pago por WhatsApp al{' '}
+                  <strong>Próximo paso:</strong> Realiza el pago por WhatsApp al{" "}
                   <strong>+51 999 321 654</strong> y envía tu comprobante.
                 </p>
               </div>
@@ -170,7 +171,7 @@ function PlansPage() {
                   disabled={processing}
                   className="flex-1 px-6 py-3 bg-emerald-500 text-white rounded-lg font-semibold hover:bg-emerald-600 transition disabled:bg-gray-300"
                 >
-                  {processing ? 'Procesando...' : 'Continuar'}
+                  {processing ? "Procesando..." : "Continuar"}
                 </button>
               </div>
             </div>

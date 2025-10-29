@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { TaskProvider } from "./context/TasksContext";
 import { MembershipProvider } from "./context/MembershipContext";
+import { ExchangesProvider } from "./context/ExchangesContext";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import TasksPage from "./pages/TasksPage";
@@ -10,6 +11,9 @@ import ProfilePage from "./pages/ProfilePage";
 import LandingPage from "./pages/LandingPage";
 import PlansPage from "./pages/PlansPage";
 import MembershipDashboard from "./pages/MembershipDashboard";
+import CreateExchangePage from "./pages/CreateExchangePage";
+import ExchangesListPage from "./pages/ExchangesListPage";
+import MyExchangesPage from "./pages/MyExchangesPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Navbar from "./components/Navbar";
 
@@ -17,71 +21,79 @@ function App() {
   return (
     <AuthProvider>
       <MembershipProvider>
-        <TaskProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Ruta pública - Landing Page sin navbar del sistema */}
-              <Route path="/" element={<LandingPage />} />
+        <ExchangesProvider>
+          <TaskProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Ruta pública - Landing Page sin navbar del sistema */}
+                <Route path="/" element={<LandingPage />} />
 
-              {/* Rutas de autenticación */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+                {/* Rutas de autenticación */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-              {/* Ruta pública - Planes */}
-              <Route path="/plans" element={<PlansPage />} />
+                {/* Ruta pública - Planes */}
+                <Route path="/plans" element={<PlansPage />} />
 
-              {/* Rutas protegidas - Dashboard del sistema */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/membership" element={<MembershipDashboard />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <main className="container mx-auto px-10">
-                      <Navbar />
-                      <TasksPage />
-                    </main>
-                  }
-                />
-                <Route
-                  path="/tasks"
-                  element={
-                    <main className="container mx-auto px-10">
-                      <Navbar />
-                      <TasksPage />
-                    </main>
-                  }
-                />
-                <Route
-                  path="/add-task"
-                  element={
-                    <main className="container mx-auto px-10">
-                      <Navbar />
-                      <TaskFormPage />
-                    </main>
-                  }
-                />
-                <Route
-                  path="/tasks/:id"
-                  element={
-                    <main className="container mx-auto px-10">
-                      <Navbar />
-                      <TaskFormPage />
-                    </main>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <main className="container mx-auto px-10">
-                      <Navbar />
-                      <ProfilePage />
-                    </main>
-                  }
-                />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </TaskProvider>
+                {/* Rutas protegidas - Dashboard del sistema */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/membership" element={<MembershipDashboard />} />
+                  
+                  {/* Rutas de Trueques */}
+                  <Route path="/exchanges" element={<ExchangesListPage />} />
+                  <Route path="/create-exchange" element={<CreateExchangePage />} />
+                  <Route path="/my-exchanges" element={<MyExchangesPage />} />
+                  
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <main className="container mx-auto px-10">
+                        <Navbar />
+                        <TasksPage />
+                      </main>
+                    }
+                  />
+                  <Route
+                    path="/tasks"
+                    element={
+                      <main className="container mx-auto px-10">
+                        <Navbar />
+                        <TasksPage />
+                      </main>
+                    }
+                  />
+                  <Route
+                    path="/add-task"
+                    element={
+                      <main className="container mx-auto px-10">
+                        <Navbar />
+                        <TaskFormPage />
+                      </main>
+                    }
+                  />
+                  <Route
+                    path="/tasks/:id"
+                    element={
+                      <main className="container mx-auto px-10">
+                        <Navbar />
+                        <TaskFormPage />
+                      </main>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <main className="container mx-auto px-10">
+                        <Navbar />
+                        <ProfilePage />
+                      </main>
+                    }
+                  />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </TaskProvider>
+        </ExchangesProvider>
       </MembershipProvider>
     </AuthProvider>
   );

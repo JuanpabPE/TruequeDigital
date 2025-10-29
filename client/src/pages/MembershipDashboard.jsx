@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useMembership } from '../context/MembershipContext';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useMembership } from "../context/MembershipContext";
+import { useAuth } from "../context/AuthContext";
 
 function MembershipDashboard() {
-  const { activeMembership, membershipHistory, loading, getActiveMembership, getMembershipHistory, cancelMembership } = useMembership();
+  const {
+    activeMembership,
+    membershipHistory,
+    loading,
+    getActiveMembership,
+    getMembershipHistory,
+    cancelMembership,
+  } = useMembership();
   const { user } = useAuth();
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelling, setCancelling] = useState(false);
@@ -19,7 +26,7 @@ function MembershipDashboard() {
       setCancelling(true);
       await cancelMembership();
       setShowCancelModal(false);
-      alert('Membresía cancelada exitosamente');
+      alert("Membresía cancelada exitosamente");
     } catch (error) {
       alert(error.message);
     } finally {
@@ -28,10 +35,10 @@ function MembershipDashboard() {
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('es-PE', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(date).toLocaleDateString("es-PE", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -45,26 +52,28 @@ function MembershipDashboard() {
 
   const getPlanName = (planId) => {
     const names = {
-      basic: 'Plan Básico',
-      standard: 'Plan Standard',
-      premium: 'Plan Premium'
+      basic: "Plan Básico",
+      standard: "Plan Standard",
+      premium: "Plan Premium",
     };
     return names[planId] || planId;
   };
 
   const getStatusBadge = (status) => {
     const badges = {
-      active: 'bg-green-100 text-green-800',
-      expired: 'bg-red-100 text-red-800',
-      cancelled: 'bg-gray-100 text-gray-800'
+      active: "bg-green-100 text-green-800",
+      expired: "bg-red-100 text-red-800",
+      cancelled: "bg-gray-100 text-gray-800",
     };
     const labels = {
-      active: 'Activa',
-      expired: 'Expirada',
-      cancelled: 'Cancelada'
+      active: "Activa",
+      expired: "Expirada",
+      cancelled: "Cancelada",
     };
     return (
-      <span className={`px-3 py-1 rounded-full text-sm font-semibold ${badges[status]}`}>
+      <span
+        className={`px-3 py-1 rounded-full text-sm font-semibold ${badges[status]}`}
+      >
         {labels[status]}
       </span>
     );
@@ -87,7 +96,9 @@ function MembershipDashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Mi Membresía</h1>
-          <p className="text-gray-600 mt-2">Gestiona tu suscripción y beneficios</p>
+          <p className="text-gray-600 mt-2">
+            Gestiona tu suscripción y beneficios
+          </p>
         </div>
 
         {/* Active Membership Card */}
@@ -98,7 +109,9 @@ function MembershipDashboard() {
                 <h2 className="text-2xl font-bold mb-2">
                   {getPlanName(activeMembership.plan)}
                 </h2>
-                <p className="text-emerald-100">S/{activeMembership.price} /mes</p>
+                <p className="text-emerald-100">
+                  S/{activeMembership.price} /mes
+                </p>
               </div>
               <div className="bg-white text-emerald-600 px-4 py-2 rounded-lg font-bold">
                 {getDaysRemaining(activeMembership.endDate)} días restantes
@@ -108,11 +121,15 @@ function MembershipDashboard() {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
                 <p className="text-emerald-100 text-sm">Inicio</p>
-                <p className="font-semibold">{formatDate(activeMembership.startDate)}</p>
+                <p className="font-semibold">
+                  {formatDate(activeMembership.startDate)}
+                </p>
               </div>
               <div>
                 <p className="text-emerald-100 text-sm">Renovación</p>
-                <p className="font-semibold">{formatDate(activeMembership.endDate)}</p>
+                <p className="font-semibold">
+                  {formatDate(activeMembership.endDate)}
+                </p>
               </div>
             </div>
 
@@ -180,7 +197,8 @@ function MembershipDashboard() {
                       {getPlanName(membership.plan)}
                     </p>
                     <p className="text-sm text-gray-600">
-                      {formatDate(membership.startDate)} - {formatDate(membership.endDate)}
+                      {formatDate(membership.startDate)} -{" "}
+                      {formatDate(membership.endDate)}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
@@ -203,7 +221,7 @@ function MembershipDashboard() {
                 ¿Cancelar membresía?
               </h3>
               <p className="text-gray-600 mb-6">
-                Tu membresía se mantendrá activa hasta{' '}
+                Tu membresía se mantendrá activa hasta{" "}
                 <strong>{formatDate(activeMembership.endDate)}</strong>. Después
                 perderás acceso a todos los beneficios.
               </p>
@@ -220,7 +238,7 @@ function MembershipDashboard() {
                   disabled={cancelling}
                   className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition disabled:bg-gray-300"
                 >
-                  {cancelling ? 'Cancelando...' : 'Sí, cancelar'}
+                  {cancelling ? "Cancelando..." : "Sí, cancelar"}
                 </button>
               </div>
             </div>
