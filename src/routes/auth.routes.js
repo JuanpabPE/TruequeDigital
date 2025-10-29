@@ -20,4 +20,27 @@ router.get("/verify", verifyToken);
 
 router.get("/profile", authRequired, profile);
 
+// Debug endpoint - temporal
+router.get("/debug/me", authRequired, async (req, res) => {
+  try {
+    const User = (await import("../models/user.model.js")).default;
+    const Membership = (await import("../models/membership.model.js")).default;
+    
+    const user = await User.findById(req.user.id)
+      .populate("activeMembership")
+      .select("-password");
+    
+    const allMemberships = await Membership.find({ user: req.user.id });
+    
+    res.json({
+      user,
+      allMemberships,
+      hasActiveMembership: !!user.activeMembership,
+      activeMembershipDetails: user.activeMembership,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

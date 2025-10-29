@@ -9,6 +9,7 @@ import exchangeRoutes from "./routes/exchanges.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import matchRoutes from "./routes/matches.routes.js";
 import healthRoutes from "./routes/health.routes.js";
+import debugRoutes from "./routes/debug.routes.js";
 import { FRONTEND_URL } from "./config.js";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api", healthRoutes);
+app.use("/api", debugRoutes);
 app.use("/api", authRoutes);
 app.use("/api", taskRoutes);
 app.use("/api", membershipRoutes);
