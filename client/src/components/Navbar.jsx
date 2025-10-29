@@ -74,7 +74,10 @@ function Navbar() {
                 Membresía
               </Link>
             </li>
-            <li className="text-gray-300">Hola, {user.username}</li>
+            <li className="text-gray-300">
+              Hola, {user.username}
+              <span className="text-xs ml-2 text-gray-500">(ID: {user.id?.slice(-4)})</span>
+            </li>
             <li>
               <Link
                 to="/create-exchange"

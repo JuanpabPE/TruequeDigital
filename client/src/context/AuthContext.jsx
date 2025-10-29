@@ -34,7 +34,9 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
-      console.log(res);
+      console.log("✅ LOGIN RESPONSE:", res.data);
+      console.log("👤 User ID:", res.data.id);
+      console.log("📛 Username:", res.data.username);
       setIsAuthenticated(true);
       setUser(res.data);
     } catch (error) {
@@ -71,7 +73,11 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const res = await verifyTokenRequest(cookies.token);
-        console.log(res);
+        console.log("🔄 VERIFY TOKEN RESPONSE:", res.data);
+        if (res.data) {
+          console.log("👤 Verified User ID:", res.data.id);
+          console.log("📛 Verified Username:", res.data.username);
+        }
         if (!res.data) {
           setIsAuthenticated(false);
           setLoading(false);
