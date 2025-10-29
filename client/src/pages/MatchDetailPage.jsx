@@ -362,7 +362,7 @@ function MatchDetailPage() {
                         })
                       }
                       placeholder="Ej: Plaza de Armas, Starbucks Av. Larco..."
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 placeholder-gray-400"
                     />
                   </div>
 
@@ -379,7 +379,7 @@ function MatchDetailPage() {
                         })
                       }
                       placeholder="Detalles adicionales sobre el encuentro..."
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-400"
                       rows="3"
                     ></textarea>
                   </div>

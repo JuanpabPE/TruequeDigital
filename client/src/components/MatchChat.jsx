@@ -139,7 +139,7 @@ function MatchChat({ match, onSendMessage }) {
               }
             }}
             placeholder="Escribe un mensaje... (Enter para enviar, Shift+Enter para nueva línea)"
-            className="flex-1 px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            className="flex-1 px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-400"
             rows="2"
             maxLength="1000"
             disabled={sending}

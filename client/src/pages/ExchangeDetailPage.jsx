@@ -421,7 +421,7 @@ function ExchangeDetailPage() {
                     <select
                       value={selectedExchange}
                       onChange={(e) => setSelectedExchange(e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900"
                       required
                     >
                       <option value="">Selecciona un exchange...</option>
@@ -442,7 +442,7 @@ function ExchangeDetailPage() {
                     value={initialMessage}
                     onChange={(e) => setInitialMessage(e.target.value)}
                     placeholder="Cuéntale por qué te interesa este intercambio..."
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-400"
                     rows="4"
                     maxLength="500"
                   ></textarea>
