@@ -40,8 +40,13 @@ export const createExchange = async (req, res) => {
     });
 
     const savedExchange = await newExchange.save();
-    console.log("✅ Exchange created:", savedExchange._id, "by user:", req.user.id);
-    
+    console.log(
+      "✅ Exchange created:",
+      savedExchange._id,
+      "by user:",
+      req.user.id
+    );
+
     const populatedExchange = await Exchange.findById(
       savedExchange._id
     ).populate("user", "username email university averageRating");
@@ -68,13 +73,12 @@ export const getExchanges = async (req, res) => {
       location,
     } = req.query;
 
-    // Solo mostrar exchanges disponibles y NO del usuario actual
-    let query = { 
+    // Mostrar todos los exchanges disponibles (incluyendo propios)
+    let query = {
       $or: [
         { status: "disponible" },
-        { status: "available" } // Compatibilidad con estados antiguos
+        { status: "available" }, // Compatibilidad con estados antiguos
       ],
-      user: { $ne: req.user.id } // Excluir exchanges propios
     };
 
     // Filtros
@@ -119,7 +123,9 @@ export const getExchanges = async (req, res) => {
       .populate("user", "username email university averageRating profileImage")
       .sort({ createdAt: -1 });
 
-    console.log(`📦 Found ${exchanges.length} exchanges (excluding user's own)`);
+    console.log(
+      `📦 Found ${exchanges.length} exchanges (including user's own)`
+    );
 
     res.json(exchanges);
   } catch (error) {
@@ -157,13 +163,15 @@ export const getExchangeById = async (req, res) => {
 export const getMyExchanges = async (req, res) => {
   try {
     console.log("🔍 getMyExchanges - User ID:", req.user.id);
-    
+
     const exchanges = await Exchange.find({ user: req.user.id })
       .populate("user", "username email university averageRating")
       .sort({ createdAt: -1 });
 
-    console.log(`📦 Found ${exchanges.length} exchanges for user ${req.user.id}`);
-    
+    console.log(
+      `📦 Found ${exchanges.length} exchanges for user ${req.user.id}`
+    );
+
     res.json(exchanges);
   } catch (error) {
     console.error("Error fetching my exchanges:", error);
@@ -227,12 +235,10 @@ export const updateExchange = async (req, res) => {
     res.json(populatedExchange);
   } catch (error) {
     console.error("Error updating exchange:", error);
-    res
-      .status(500)
-      .json({
-        message: "Error al actualizar el trueque",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error al actualizar el trueque",
+      error: error.message,
+    });
   }
 };
 

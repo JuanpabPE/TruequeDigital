@@ -222,3 +222,52 @@ export const renewMembership = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// AUTO-APROBAR MEMBRESÍA (Solo para desarrollo/testing)
+export const autoApproveMembership = async (req, res) => {
+  try {
+    console.log("🔧 AUTO-APPROVE - User ID:", req.user.id);
+    
+    // Buscar la membresía pendiente más reciente del usuario
+    const pendingMembership = await Membership.findOne({
+      user: req.user.id,
+      status: "pending",
+    }).sort({ createdAt: -1 });
+
+    if (!pendingMembership) {
+      return res.json({ 
+        message: "No tienes membresías pendientes",
+        hasPending: false 
+      });
+    }
+
+    console.log("✅ Found pending membership:", pendingMembership._id);
+
+    // Aprobar automáticamente
+    pendingMembership.status = "active";
+    const now = new Date();
+    pendingMembership.startDate = now;
+    
+    // Calcular fecha de fin (30 días)
+    const endDate = new Date(now);
+    endDate.setDate(endDate.getDate() + 30);
+    pendingMembership.endDate = endDate;
+
+    await pendingMembership.save();
+
+    // Actualizar usuario
+    await User.findByIdAndUpdate(req.user.id, {
+      activeMembership: pendingMembership._id,
+    });
+
+    console.log("🎉 Membership auto-approved!");
+
+    res.json({
+      message: "Membresía aprobada automáticamente",
+      membership: pendingMembership,
+      approved: true
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

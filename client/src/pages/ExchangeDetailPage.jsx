@@ -66,20 +66,20 @@ function ExchangeDetailPage() {
             credentials: "include",
           }
         );
-        
+
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
-        
+
         const data = await res.json();
-        
+
         // Asegurar que data es un array
         if (!Array.isArray(data)) {
           console.error("La respuesta no es un array:", data);
           setMyExchanges([]);
           return;
         }
-        
+
         // Solo mostrar exchanges disponibles (español e inglés por compatibilidad)
         setMyExchanges(
           data.filter(
