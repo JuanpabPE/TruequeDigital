@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useExchanges } from "../context/ExchangesContext";
 import { useMembership } from "../context/MembershipContext";
+import { uploadImagesRequest } from "../api/upload";
 
 const CATEGORIES = [
   "Electrónica",
@@ -30,7 +31,9 @@ function CreateExchangePage() {
   const navigate = useNavigate();
   const { createExchange, loading, error, setError } = useExchanges();
   const { activeMembership, getActiveMembership } = useMembership();
-  const [imageUrls, setImageUrls] = useState([""]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
   const {
@@ -52,20 +55,31 @@ function CreateExchangePage() {
     checkMembership();
   }, []);
 
-  const addImageField = () => {
-    if (imageUrls.length < 5) {
-      setImageUrls([...imageUrls, ""]);
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    
+    if (files.length + selectedFiles.length > 5) {
+      setSubmitError("Máximo 5 imágenes permitidas");
+      return;
     }
+
+    // Crear previsualizaciones
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    
+    setSelectedFiles([...selectedFiles, ...files]);
+    setImagePreviews([...imagePreviews, ...newPreviews]);
+    setSubmitError(null);
   };
 
-  const removeImageField = (index) => {
-    setImageUrls(imageUrls.filter((_, i) => i !== index));
-  };
-
-  const updateImageUrl = (index, value) => {
-    const newUrls = [...imageUrls];
-    newUrls[index] = value;
-    setImageUrls(newUrls);
+  const removeImage = (index) => {
+    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    
+    // Liberar memoria del preview eliminado
+    URL.revokeObjectURL(imagePreviews[index]);
+    
+    setSelectedFiles(newFiles);
+    setImagePreviews(newPreviews);
   };
 
   const onSubmit = async (data) => {
@@ -73,8 +87,22 @@ function CreateExchangePage() {
       setError(null);
       setSubmitError(null);
 
-      // Filtrar URLs vacías
-      const validImages = imageUrls.filter((url) => url.trim() !== "");
+      let imageUrls = [];
+
+      // Subir imágenes si hay archivos seleccionados
+      if (selectedFiles.length > 0) {
+        setUploadingImages(true);
+        try {
+          const uploadRes = await uploadImagesRequest(selectedFiles);
+          imageUrls = uploadRes.data.images.map((img) => img.url);
+        } catch (uploadError) {
+          console.error("Error uploading images:", uploadError);
+          setSubmitError("Error al subir las imágenes. Intenta de nuevo.");
+          setUploadingImages(false);
+          return;
+        }
+        setUploadingImages(false);
+      }
 
       const exchangeData = {
         title: data.title,
@@ -86,10 +114,14 @@ function CreateExchangePage() {
         seekingDescription: data.seekingDescription,
         location: data.isVirtual ? "Virtual" : data.location,
         isVirtual: data.isVirtual,
-        images: validImages,
+        images: imageUrls,
       };
 
       await createExchange(exchangeData);
+      
+      // Limpiar previews
+      imagePreviews.forEach((preview) => URL.revokeObjectURL(preview));
+      
       navigate("/my-exchanges");
     } catch (err) {
       console.error("Error creating exchange:", err);
@@ -348,38 +380,53 @@ function CreateExchangePage() {
               📸 Imágenes (opcional)
             </h2>
             <p className="text-sm text-gray-600">
-              Agrega hasta 5 URLs de imágenes de tu producto
+              Agrega hasta 5 imágenes de tu producto (máximo 5MB cada una)
             </p>
 
-            {imageUrls.map((url, index) => (
-              <div key={index} className="flex gap-2">
-                <input
-                  type="url"
-                  value={url}
-                  onChange={(e) => updateImageUrl(index, e.target.value)}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition text-gray-900"
-                  placeholder="https://ejemplo.com/imagen.jpg"
-                />
-                {imageUrls.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeImageField(index)}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                  >
-                    ✕
-                  </button>
-                )}
+            {/* Preview de imágenes seleccionadas */}
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={preview}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-40 object-cover rounded-lg border-2 border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition opacity-0 group-hover:opacity-100"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
 
-            {imageUrls.length < 5 && (
-              <button
-                type="button"
-                onClick={addImageField}
-                className="w-full py-3 border-2 border-dashed border-emerald-300 text-emerald-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition"
-              >
-                + Agregar otra imagen
-              </button>
+            {/* Input de archivos */}
+            {selectedFiles.length < 5 && (
+              <div>
+                <label className="block w-full py-8 border-2 border-dashed border-emerald-300 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition cursor-pointer text-center">
+                  <div className="text-emerald-600 text-4xl mb-2">📷</div>
+                  <div className="text-emerald-600 font-medium">
+                    Click para seleccionar imágenes
+                  </div>
+                  <div className="text-gray-500 text-sm mt-1">
+                    {selectedFiles.length > 0
+                      ? `${selectedFiles.length} de 5 imágenes seleccionadas`
+                      : "JPG, PNG, GIF o WEBP (máx. 5MB cada una)"}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
             )}
           </div>
 
@@ -394,10 +441,14 @@ function CreateExchangePage() {
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || uploadingImages}
               className="flex-1 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Publicando..." : "Publicar Trueque"}
+              {uploadingImages
+                ? "Subiendo imágenes..."
+                : loading
+                ? "Publicando..."
+                : "Publicar Trueque"}
             </button>
           </div>
         </form>

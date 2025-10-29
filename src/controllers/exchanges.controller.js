@@ -17,15 +17,7 @@ export const createExchange = async (req, res) => {
       images,
     } = req.body;
 
-    // Verificar que el usuario tenga membresía activa (middleware ya lo verifica)
-    const user = await User.findById(req.user.id).populate("activeMembership");
-    if (!user.activeMembership || !user.activeMembership.isActive()) {
-      return res.status(403).json({
-        message: "Necesitas una membresía activa para publicar trueques",
-        requiresMembership: true,
-      });
-    }
-
+    // El middleware requireActiveMembership ya verificó la membresía activa
     const newExchange = new Exchange({
       user: req.user.id,
       title,
