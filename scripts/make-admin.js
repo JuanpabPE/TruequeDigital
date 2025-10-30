@@ -11,9 +11,7 @@ const makeUserAdmin = async (email) => {
     console.log("✅ Conectado a MongoDB");
 
     if (!email) {
-      console.error(
-        "❌ Error: Debes proporcionar un email como argumento"
-      );
+      console.error("❌ Error: Debes proporcionar un email como argumento");
       console.log("\nUso: node scripts/make-admin.js usuario@ejemplo.com");
       process.exit(1);
     }
@@ -28,7 +26,9 @@ const makeUserAdmin = async (email) => {
 
     // Verificar si ya es admin
     if (user.isAdmin) {
-      console.log(`ℹ️  El usuario ${user.username} (${email}) ya es administrador`);
+      console.log(
+        `ℹ️  El usuario ${user.username} (${email}) ya es administrador`
+      );
       process.exit(0);
     }
 
@@ -36,7 +36,9 @@ const makeUserAdmin = async (email) => {
     user.isAdmin = true;
     await user.save();
 
-    console.log(`✅ Usuario ${user.username} (${email}) ahora es ADMINISTRADOR`);
+    console.log(
+      `✅ Usuario ${user.username} (${email}) ahora es ADMINISTRADOR`
+    );
     console.log("\n📋 Información del usuario:");
     console.log(`   ID: ${user._id}`);
     console.log(`   Username: ${user.username}`);

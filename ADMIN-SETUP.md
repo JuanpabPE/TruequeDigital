@@ -21,6 +21,7 @@ node scripts/make-admin.js correo@ejemplo.com
 ```
 
 **Ejemplo:**
+
 ```bash
 node scripts/make-admin.js pablo@upn.edu.pe
 ```
@@ -34,7 +35,7 @@ node scripts/make-admin.js pablo@upn.edu.pe
 db.users.updateOne(
   { email: "tu-email@ejemplo.com" },
   { $set: { isAdmin: true } }
-)
+);
 ```
 
 ---
@@ -79,11 +80,13 @@ Usuario → Login → Token JWT → authRequired ✓ → isAdmin ✓ → Ruta Ad
 1. **Registra un usuario normal** (o usa uno existente)
 
 2. **Conviértelo en admin:**
+
    ```bash
    node scripts/make-admin.js tu-email@ejemplo.com
    ```
 
 3. **Verifica que funcionó:**
+
    ```bash
    # Deberías ver:
    ✅ Usuario [nombre] (email) ahora es ADMINISTRADOR

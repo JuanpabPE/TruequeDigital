@@ -1,35 +1,40 @@
 function PaymentQR({ paymentMethod, phoneNumber, amount }) {
-  const getPaymentIcon = () => {
-    if (paymentMethod === "yape") {
-      return (
-        <div className="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="text-white font-bold text-3xl">YAPE</span>
-        </div>
-      );
-    } else {
-      return (
-        <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="text-white font-bold text-3xl">PLIN</span>
-        </div>
-      );
-    }
+  const getQRImage = () => {
+    return paymentMethod === "yape" ? "/img/QR_YAPE.jpg" : "/img/QR_PLIN.jpg";
   };
 
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 text-center border-2 border-gray-300">
-      {getPaymentIcon()}
-
-      <h4 className="font-bold text-gray-900 text-xl mb-2">
-        Realiza tu pago por {paymentMethod === "yape" ? "Yape" : "Plin"}
+      <h4 className="font-bold text-gray-900 text-xl mb-4">
+        Escanea el código QR con {paymentMethod === "yape" ? "Yape" : "Plin"}
       </h4>
 
-      <div className="bg-white rounded-lg p-6 my-4 shadow-sm">
-        <p className="text-sm text-gray-600 mb-2">Transfiere al número:</p>
-        <p className="text-3xl font-bold text-gray-900 mb-4">{phoneNumber}</p>
+      {/* QR Code Image */}
+      <div className="bg-white rounded-lg p-4 my-4 shadow-lg inline-block">
+        <img
+          src={getQRImage()}
+          alt={`QR ${paymentMethod === "yape" ? "Yape" : "Plin"}`}
+          className="w-64 h-64 object-contain mx-auto"
+          onError={(e) => {
+            e.target.style.display = "none";
+            e.target.nextElementSibling.style.display = "block";
+          }}
+        />
+        <div style={{ display: "none" }} className="w-64 h-64 flex items-center justify-center bg-gray-100 rounded-lg">
+          <div className="text-center">
+            <p className="text-gray-500 mb-2">QR no disponible</p>
+            <p className="text-sm text-gray-400">Usa el número: {phoneNumber}</p>
+          </div>
+        </div>
+      </div>
 
-        <div className="border-t-2 border-dashed border-gray-300 pt-4">
+      <div className="bg-white rounded-lg p-4 my-4 shadow-sm">
+        <p className="text-sm text-gray-600 mb-2">O transfiere al número:</p>
+        <p className="text-2xl font-bold text-gray-900 mb-3">{phoneNumber}</p>
+
+        <div className="border-t-2 border-dashed border-gray-300 pt-3">
           <p className="text-sm text-gray-600 mb-1">Monto a pagar:</p>
-          <p className="text-4xl font-bold text-emerald-600">S/ {amount}</p>
+          <p className="text-3xl font-bold text-emerald-600">S/ {amount}</p>
         </div>
       </div>
 
