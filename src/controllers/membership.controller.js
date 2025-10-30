@@ -108,18 +108,27 @@ export const createMembership = async (req, res) => {
 // Obtener membresía activa del usuario
 export const getActiveMembership = async (req, res) => {
   try {
-    const membership = await Membership.findOne({
+    // Buscar membresía activa primero
+    let membership = await Membership.findOne({
       user: req.user.id,
       status: "active",
     }).sort({ createdAt: -1 });
+
+    // Si no hay activa, buscar pendiente
+    if (!membership) {
+      membership = await Membership.findOne({
+        user: req.user.id,
+        status: "pending",
+      }).sort({ createdAt: -1 });
+    }
 
     if (!membership) {
       // Devolver 200 con null en lugar de 404
       return res.json(null);
     }
 
-    // Verificar si está vencida
-    if (!membership.isActive()) {
+    // Verificar si está vencida (solo para activas)
+    if (membership.status === "active" && !membership.isActive()) {
       membership.status = "expired";
       await membership.save();
 
@@ -336,16 +345,14 @@ export const uploadPaymentProof = async (req, res) => {
 
     // Actualizar membresía con el comprobante
     membership.paymentProof = result.secure_url;
-    membership.status = "active"; // Activar automáticamente por ahora
+    membership.status = "pending"; // Mantener en pending para revisión manual
     await membership.save();
 
-    // Actualizar usuario con la membresía activa
-    await User.findByIdAndUpdate(req.user.id, {
-      activeMembership: membership._id,
-    });
+    // NO actualizar usuario con la membresía activa todavía
+    // Esto se hará cuando un admin apruebe el pago
 
     res.json({
-      message: "Comprobante subido exitosamente",
+      message: "Comprobante subido exitosamente. Tu pago será revisado pronto.",
       url: result.secure_url,
       membership,
     });
@@ -355,5 +362,104 @@ export const uploadPaymentProof = async (req, res) => {
       message: "Error al subir el comprobante",
       error: error.message,
     });
+  }
+};
+
+// OBTENER TODAS LAS MEMBRESÍAS PENDIENTES (Admin)
+export const getPendingMemberships = async (req, res) => {
+  try {
+    const pendingMemberships = await Membership.find({
+      status: "pending",
+      paymentProof: { $ne: "" }, // Solo las que tienen comprobante
+    })
+      .populate("user", "username email")
+      .sort({ createdAt: -1 });
+
+    res.json(pendingMemberships);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// APROBAR MEMBRESÍA (Admin)
+export const approveMembership = async (req, res) => {
+  try {
+    const { membershipId } = req.params;
+
+    const membership = await Membership.findById(membershipId);
+
+    if (!membership) {
+      return res.status(404).json({ message: "Membresía no encontrada" });
+    }
+
+    if (membership.status !== "pending") {
+      return res.status(400).json({
+        message: "Solo se pueden aprobar membresías pendientes",
+      });
+    }
+
+    // Aprobar la membresía
+    membership.status = "active";
+    const now = new Date();
+    membership.startDate = now;
+
+    // Calcular fecha de fin (30 días)
+    const endDate = new Date(now);
+    endDate.setDate(endDate.getDate() + 30);
+    membership.endDate = endDate;
+
+    await membership.save();
+
+    // Actualizar usuario con la membresía activa
+    await User.findByIdAndUpdate(membership.user, {
+      activeMembership: membership._id,
+    });
+
+    console.log(
+      `✅ Membresía ${membershipId} aprobada para usuario ${membership.user}`
+    );
+
+    res.json({
+      message: "Membresía aprobada exitosamente",
+      membership,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// RECHAZAR MEMBRESÍA (Admin)
+export const rejectMembership = async (req, res) => {
+  try {
+    const { membershipId } = req.params;
+    const { reason } = req.body;
+
+    const membership = await Membership.findById(membershipId);
+
+    if (!membership) {
+      return res.status(404).json({ message: "Membresía no encontrada" });
+    }
+
+    if (membership.status !== "pending") {
+      return res.status(400).json({
+        message: "Solo se pueden rechazar membresías pendientes",
+      });
+    }
+
+    // Rechazar la membresía
+    membership.status = "cancelled";
+    membership.rejectionReason = reason || "Comprobante inválido";
+    await membership.save();
+
+    console.log(
+      `❌ Membresía ${membershipId} rechazada. Razón: ${reason || "No especificada"}`
+    );
+
+    res.json({
+      message: "Membresía rechazada",
+      membership,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

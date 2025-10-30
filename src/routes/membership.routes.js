@@ -10,6 +10,9 @@ import {
   renewMembership,
   autoApproveMembership,
   uploadPaymentProof,
+  getPendingMemberships,
+  approveMembership,
+  rejectMembership,
 } from "../controllers/membership.controller.js";
 
 const router = Router();
@@ -32,5 +35,10 @@ router.post(
 
 // Ruta de desarrollo para auto-aprobar membresías pendientes
 router.post("/memberships/auto-approve", authRequired, autoApproveMembership);
+
+// Rutas de administración (TODO: agregar middleware de admin)
+router.get("/admin/memberships/pending", authRequired, getPendingMemberships);
+router.post("/admin/memberships/:membershipId/approve", authRequired, approveMembership);
+router.post("/admin/memberships/:membershipId/reject", authRequired, rejectMembership);
 
 export default router;

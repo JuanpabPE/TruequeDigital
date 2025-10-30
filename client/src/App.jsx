@@ -18,6 +18,7 @@ import MyExchangesPage from "./pages/MyExchangesPage";
 import ExchangeDetailPage from "./pages/ExchangeDetailPage";
 import MatchesPage from "./pages/MatchesPage";
 import MatchDetailPage from "./pages/MatchDetailPage";
+import AdminMembershipsPage from "./pages/AdminMembershipsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Navbar from "./components/Navbar";
 
@@ -45,6 +46,12 @@ function App() {
                     <Route
                       path="/membership"
                       element={<MembershipDashboard />}
+                    />
+
+                    {/* Ruta de Administración */}
+                    <Route
+                      path="/admin/memberships"
+                      element={<AdminMembershipsPage />}
                     />
 
                     {/* Rutas de Trueques */}

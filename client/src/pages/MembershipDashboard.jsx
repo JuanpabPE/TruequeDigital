@@ -108,78 +108,131 @@ function MembershipDashboard() {
 
           {/* Active Membership Card */}
           {activeMembership ? (
-            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl shadow-lg p-8 text-white mb-8">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">
-                    {getPlanName(activeMembership.plan)}
-                  </h2>
-                  <p className="text-emerald-100">
-                    S/{activeMembership.price} /mes
+            activeMembership.status === "pending" ? (
+              // Membresía Pendiente
+              <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl shadow-lg p-8 text-white mb-8">
+                <div className="flex items-center justify-center mb-4">
+                  <svg
+                    className="w-16 h-16 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold mb-2 text-center">
+                  Pago en Revisión
+                </h2>
+                <p className="text-yellow-100 text-center mb-6">
+                  {getPlanName(activeMembership.plan)} - S/
+                  {activeMembership.price}
+                </p>
+
+                <div className="bg-white bg-opacity-20 rounded-lg p-6">
+                  <p className="text-center mb-4">
+                    Tu comprobante de pago está siendo revisado por nuestro
+                    equipo.
+                  </p>
+                  <p className="text-center text-sm text-yellow-100">
+                    Te notificaremos cuando tu membresía sea aprobada.
+                    Generalmente toma menos de 24 horas.
                   </p>
                 </div>
-                <div className="bg-white text-emerald-600 px-4 py-2 rounded-lg font-bold">
-                  {getDaysRemaining(activeMembership.endDate)} días restantes
-                </div>
-              </div>
 
-              {/* Exchanges Progress Bar */}
-              <div className="bg-white bg-opacity-20 rounded-lg p-4 mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-semibold">
-                    Intercambios disponibles
-                  </span>
-                  <span className="text-lg font-bold">
-                    {activeMembership.exchangesAllowed -
-                      activeMembership.exchangesUsed}{" "}
-                    / {activeMembership.exchangesAllowed}
-                  </span>
-                </div>
-                <div className="w-full bg-white bg-opacity-30 rounded-full h-3">
-                  <div
-                    className="bg-white rounded-full h-3 transition-all duration-300"
-                    style={{
-                      width: `${
-                        ((activeMembership.exchangesAllowed -
-                          activeMembership.exchangesUsed) /
-                          activeMembership.exchangesAllowed) *
-                        100
-                      }%`,
-                    }}
-                  ></div>
-                </div>
+                {activeMembership.paymentProof && (
+                  <div className="mt-6 text-center">
+                    <a
+                      href={activeMembership.paymentProof}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block bg-white text-yellow-600 px-6 py-2 rounded-lg font-semibold hover:bg-yellow-50 transition"
+                    >
+                      Ver comprobante enviado
+                    </a>
+                  </div>
+                )}
               </div>
+            ) : (
+              // Membresía Activa
+              <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl shadow-lg p-8 text-white mb-8">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">
+                      {getPlanName(activeMembership.plan)}
+                    </h2>
+                    <p className="text-emerald-100">
+                      S/{activeMembership.price} /mes
+                    </p>
+                  </div>
+                  <div className="bg-white text-emerald-600 px-4 py-2 rounded-lg font-bold">
+                    {getDaysRemaining(activeMembership.endDate)} días restantes
+                  </div>
+                </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <p className="text-emerald-100 text-sm">Inicio</p>
-                  <p className="font-semibold">
-                    {formatDate(activeMembership.startDate)}
-                  </p>
+                {/* Exchanges Progress Bar */}
+                <div className="bg-white bg-opacity-20 rounded-lg p-4 mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-semibold">
+                      Intercambios disponibles
+                    </span>
+                    <span className="text-lg font-bold">
+                      {activeMembership.exchangesAllowed -
+                        activeMembership.exchangesUsed}{" "}
+                      / {activeMembership.exchangesAllowed}
+                    </span>
+                  </div>
+                  <div className="w-full bg-white bg-opacity-30 rounded-full h-3">
+                    <div
+                      className="bg-white rounded-full h-3 transition-all duration-300"
+                      style={{
+                        width: `${
+                          ((activeMembership.exchangesAllowed -
+                            activeMembership.exchangesUsed) /
+                            activeMembership.exchangesAllowed) *
+                          100
+                        }%`,
+                      }}
+                    ></div>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-emerald-100 text-sm">Renovación</p>
-                  <p className="font-semibold">
-                    {formatDate(activeMembership.endDate)}
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex gap-4">
-                <Link
-                  to="/plans"
-                  className="flex-1 bg-white text-emerald-600 py-3 rounded-lg font-semibold text-center hover:bg-emerald-50 transition"
-                >
-                  Cambiar plan
-                </Link>
-                <button
-                  onClick={() => setShowCancelModal(true)}
-                  className="flex-1 bg-emerald-700 text-white py-3 rounded-lg font-semibold hover:bg-emerald-800 transition"
-                >
-                  Cancelar membresía
-                </button>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <p className="text-emerald-100 text-sm">Inicio</p>
+                    <p className="font-semibold">
+                      {formatDate(activeMembership.startDate)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-emerald-100 text-sm">Renovación</p>
+                    <p className="font-semibold">
+                      {formatDate(activeMembership.endDate)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Link
+                    to="/plans"
+                    className="flex-1 bg-white text-emerald-600 py-3 rounded-lg font-semibold text-center hover:bg-emerald-50 transition"
+                  >
+                    Cambiar plan
+                  </Link>
+                  <button
+                    onClick={() => setShowCancelModal(true)}
+                    className="flex-1 bg-emerald-700 text-white py-3 rounded-lg font-semibold hover:bg-emerald-800 transition"
+                  >
+                    Cancelar membresía
+                  </button>
+                </div>
               </div>
-            </div>
+            )
           ) : (
             <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 text-center">
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

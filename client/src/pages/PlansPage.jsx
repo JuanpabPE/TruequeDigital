@@ -69,7 +69,9 @@ function PlansPage() {
       // Si hay un archivo de comprobante, subirlo
       if (paymentFile) {
         await uploadPaymentProof(membership._id, paymentFile);
-        alert("¡Membresía activada exitosamente!");
+        alert(
+          "¡Comprobante subido exitosamente! Tu pago será revisado y aprobado pronto. Te notificaremos cuando tu membresía esté activa."
+        );
         setShowPaymentModal(false);
         navigate("/dashboard");
       } else {

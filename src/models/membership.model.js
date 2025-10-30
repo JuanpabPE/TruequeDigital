@@ -49,6 +49,10 @@ const membershipSchema = new mongoose.Schema(
       type: String, // URL de la imagen del comprobante
       default: "",
     },
+    rejectionReason: {
+      type: String,
+      default: "",
+    },
     autoRenew: {
       type: Boolean,
       default: false,
