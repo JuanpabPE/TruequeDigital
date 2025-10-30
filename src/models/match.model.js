@@ -110,6 +110,14 @@ const matchSchema = new mongoose.Schema(
 
     // Fecha de completado (cuando ambos confirmen)
     completedAt: Date,
+
+    // Usuarios que han ocultado/eliminado este match (soft delete)
+    deletedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

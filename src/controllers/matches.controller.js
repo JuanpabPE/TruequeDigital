@@ -121,7 +121,11 @@ export const getSentMatches = async (req, res) => {
   try {
     const { status } = req.query;
 
-    const filter = { requester: req.user.id };
+    const filter = { 
+      requester: req.user.id,
+      // Excluir matches que el usuario ha eliminado
+      deletedBy: { $ne: req.user.id }
+    };
     if (status) {
       filter.status = status;
     }
@@ -145,7 +149,11 @@ export const getReceivedMatches = async (req, res) => {
   try {
     const { status } = req.query;
 
-    const filter = { requestedUser: req.user.id };
+    const filter = { 
+      requestedUser: req.user.id,
+      // Excluir matches que el usuario ha eliminado
+      deletedBy: { $ne: req.user.id }
+    };
     if (status) {
       filter.status = status;
     }
@@ -187,6 +195,15 @@ export const getMatchById = async (req, res) => {
 
     if (!isParticipant) {
       return res.status(403).json({ message: "No tienes acceso a este match" });
+    }
+
+    // Verificar que el usuario no haya eliminado este match
+    const hasDeleted = match.deletedBy?.some(
+      (userId) => userId.toString() === req.user.id
+    );
+
+    if (hasDeleted) {
+      return res.status(404).json({ message: "Match no encontrado" });
     }
 
     // Marcar mensajes como leídos
@@ -595,12 +612,16 @@ export const getNotificationsCount = async (req, res) => {
     const pendingCount = await Match.countDocuments({
       requestedUser: req.user.id,
       status: "pending",
+      // Excluir matches que el usuario ha eliminado
+      deletedBy: { $ne: req.user.id }
     });
 
     // Contar mensajes no leídos en matches aceptados
     const acceptedMatches = await Match.find({
       $or: [{ requester: req.user.id }, { requestedUser: req.user.id }],
       status: { $in: ["accepted", "completed"] },
+      // Excluir matches que el usuario ha eliminado
+      deletedBy: { $ne: req.user.id }
     });
 
     let unreadMessagesCount = 0;
@@ -658,10 +679,23 @@ export const deleteMatch = async (req, res) => {
       });
     }
 
-    // Eliminar el match
-    await Match.findByIdAndDelete(id);
+    // Soft delete: Agregar usuario al array deletedBy si no está ya
+    if (!match.deletedBy) {
+      match.deletedBy = [];
+    }
 
-    console.log(`[DELETE MATCH] Match ${id} eliminado exitosamente por usuario ${req.user.id}`);
+    const alreadyDeleted = match.deletedBy.some(
+      (userId) => userId.toString() === req.user.id
+    );
+
+    if (alreadyDeleted) {
+      return res.status(400).json({ message: "Ya has eliminado este match" });
+    }
+
+    match.deletedBy.push(req.user.id);
+    await match.save();
+
+    console.log(`[DELETE MATCH] Match ${id} ocultado exitosamente para usuario ${req.user.id}`);
 
     res.json({ message: "Match eliminado exitosamente" });
   } catch (error) {
