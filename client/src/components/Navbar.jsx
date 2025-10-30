@@ -21,7 +21,7 @@ function Navbar() {
 
   return (
     <nav className="bg-zinc-700 my-3 flex justify-between py-5 px-10 rounded-lg">
-      <Link to={isAuthenticated ? "/dashboard" : "/"}>
+      <Link to="/">
         <h1 className="text-2xl font-bold">Cambia y Gana</h1>
       </Link>
       <ul className="flex gap-x-4 items-center">
@@ -29,7 +29,7 @@ function Navbar() {
           <>
             <li>
               <Link
-                to="/dashboard"
+                to="/"
                 className="hover:text-blue-400 transition font-semibold"
               >
                 🏠 Inicio
