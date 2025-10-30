@@ -29,7 +29,10 @@ function ProtectedRoute() {
   );
 
   // Si no tiene membresía activa y está tratando de acceder a otras rutas
-  if (!isAllowedPath && (!activeMembership || activeMembership.status !== "active")) {
+  if (
+    !isAllowedPath &&
+    (!activeMembership || activeMembership.status !== "active")
+  ) {
     return <Navigate to="/plans" replace />;
   }
 

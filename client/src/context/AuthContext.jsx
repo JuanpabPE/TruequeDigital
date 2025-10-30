@@ -79,19 +79,30 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     async function checkLogin() {
+      // Buscar token primero en cookies, luego en localStorage
       const cookies = Cookies.get();
-      if (!cookies.token) {
+      const cookieToken = cookies.token;
+      const localToken = localStorage.getItem("token");
+      const token = cookieToken || localToken;
+
+      console.log("🔍 Checking login...");
+      console.log("🍪 Cookie token:", cookieToken ? "✓ Existe" : "✗ No existe");
+      console.log("💾 LocalStorage token:", localToken ? "✓ Existe" : "✗ No existe");
+
+      if (!token) {
+        console.log("❌ No hay token disponible");
         setIsAuthenticated(false);
         setLoading(false);
         return setUser(null);
       }
 
       try {
-        const res = await verifyTokenRequest(cookies.token);
+        const res = await verifyTokenRequest(token);
         console.log("🔄 VERIFY TOKEN RESPONSE:", res.data);
         if (res.data) {
           console.log("👤 Verified User ID:", res.data.id);
           console.log("📛 Verified Username:", res.data.username);
+          console.log("🔐 Is Admin:", res.data.isAdmin);
         }
         if (!res.data) {
           setIsAuthenticated(false);
@@ -103,6 +114,7 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data);
         setLoading(false);
       } catch (error) {
+        console.error("❌ Error verificando token:", error);
         setIsAuthenticated(false);
         setUser(null);
         setLoading(false);

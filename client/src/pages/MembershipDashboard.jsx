@@ -266,36 +266,37 @@ function MembershipDashboard() {
           )}
 
           {/* Membership History */}
-          {membershipHistory.filter(m => m.status !== 'expired').length > 0 && (
+          {membershipHistory.filter((m) => m.status !== "expired").length >
+            0 && (
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h3 className="text-xl font-bold text-gray-900 mb-6">
                 Historial de membresías
               </h3>
               <div className="space-y-4">
                 {membershipHistory
-                  .filter(m => m.status !== 'expired')
+                  .filter((m) => m.status !== "expired")
                   .map((membership) => (
-                  <div
-                    key={membership._id}
-                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
-                  >
-                    <div>
-                      <p className="font-semibold text-gray-900">
-                        {getPlanName(membership.plan)}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {formatDate(membership.startDate)} -{" "}
-                        {formatDate(membership.endDate)}
-                      </p>
+                    <div
+                      key={membership._id}
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                    >
+                      <div>
+                        <p className="font-semibold text-gray-900">
+                          {getPlanName(membership.plan)}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {formatDate(membership.startDate)} -{" "}
+                          {formatDate(membership.endDate)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <p className="text-gray-900 font-semibold">
+                          S/{membership.price}
+                        </p>
+                        {getStatusBadge(membership.status)}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <p className="text-gray-900 font-semibold">
-                        S/{membership.price}
-                      </p>
-                      {getStatusBadge(membership.status)}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           )}

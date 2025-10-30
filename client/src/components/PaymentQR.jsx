@@ -20,10 +20,15 @@ function PaymentQR({ paymentMethod, phoneNumber, amount }) {
             e.target.nextElementSibling.style.display = "block";
           }}
         />
-        <div style={{ display: "none" }} className="w-64 h-64 flex items-center justify-center bg-gray-100 rounded-lg">
+        <div
+          style={{ display: "none" }}
+          className="w-64 h-64 flex items-center justify-center bg-gray-100 rounded-lg"
+        >
           <div className="text-center">
             <p className="text-gray-500 mb-2">QR no disponible</p>
-            <p className="text-sm text-gray-400">Usa el número: {phoneNumber}</p>
+            <p className="text-sm text-gray-400">
+              Usa el número: {phoneNumber}
+            </p>
           </div>
         </div>
       </div>

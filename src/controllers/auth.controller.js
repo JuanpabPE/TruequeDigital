@@ -35,6 +35,7 @@ export const register = async (req, res) => {
       id: userSaved._id,
       username: userSaved.username,
       email: userSaved.email,
+      isAdmin: userSaved.isAdmin || false,
       createAt: userSaved.createdAt,
       updateAt: userSaved.updatedAt,
       token, // Enviar token también en el response para localStorage
@@ -74,6 +75,7 @@ export const login = async (req, res) => {
       id: userFound._id,
       username: userFound.username,
       email: userFound.email,
+      isAdmin: userFound.isAdmin || false,
       createAt: userFound.createdAt,
       updateAt: userFound.updatedAt,
       token, // Enviar token también en el response para localStorage
@@ -109,18 +111,39 @@ export const profile = async (req, res) => {
 };
 
 export const verifyToken = async (req, res) => {
-  const { token } = req.cookies;
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  // Buscar token en cookies o en el header Authorization
+  let token = req.cookies.token;
+  
+  if (!token && req.headers.authorization) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token) {
+    console.log("❌ No token found in cookies or headers");
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  console.log("🔍 Verifying token...");
 
   jwt.verify(token, TOKEN_SECRET, async (err, decoded) => {
-    if (err) return res.status(401).json({ message: "Unauthorized" });
+    if (err) {
+      console.log("❌ Token verification failed:", err.message);
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const userFound = await User.findById(decoded.id);
-    if (!userFound) return res.status(401).json({ message: "Unauthorized" });
+    if (!userFound) {
+      console.log("❌ User not found for token");
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    console.log("✅ Token verified for user:", userFound.username, "Admin:", userFound.isAdmin);
 
     return res.json({
       id: userFound._id,
       username: userFound.username,
       email: userFound.email,
+      isAdmin: userFound.isAdmin || false,
     });
   });
 };
