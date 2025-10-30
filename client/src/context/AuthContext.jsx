@@ -87,7 +87,10 @@ export const AuthProvider = ({ children }) => {
 
       console.log("🔍 Checking login...");
       console.log("🍪 Cookie token:", cookieToken ? "✓ Existe" : "✗ No existe");
-      console.log("💾 LocalStorage token:", localToken ? "✓ Existe" : "✗ No existe");
+      console.log(
+        "💾 LocalStorage token:",
+        localToken ? "✓ Existe" : "✗ No existe"
+      );
 
       if (!token) {
         console.log("❌ No hay token disponible");

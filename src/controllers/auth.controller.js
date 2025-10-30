@@ -113,7 +113,7 @@ export const profile = async (req, res) => {
 export const verifyToken = async (req, res) => {
   // Buscar token en cookies o en el header Authorization
   let token = req.cookies.token;
-  
+
   if (!token && req.headers.authorization) {
     token = req.headers.authorization.split(" ")[1];
   }
@@ -137,7 +137,12 @@ export const verifyToken = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    console.log("✅ Token verified for user:", userFound.username, "Admin:", userFound.isAdmin);
+    console.log(
+      "✅ Token verified for user:",
+      userFound.username,
+      "Admin:",
+      userFound.isAdmin
+    );
 
     return res.json({
       id: userFound._id,
