@@ -42,7 +42,7 @@ export const authRequired = async (req, res, next) => {
     try {
       // Obtener el usuario completo de la base de datos
       const userFound = await User.findById(decoded.id);
-      
+
       if (!userFound) {
         console.log("❌ AUTH - Usuario no encontrado en BD");
         return res.status(401).json({ message: "User not found" });
@@ -56,7 +56,12 @@ export const authRequired = async (req, res, next) => {
         isAdmin: userFound.isAdmin || false,
       };
 
-      console.log("👤 AUTH - Usuario autenticado:", req.user.username, "Admin:", req.user.isAdmin);
+      console.log(
+        "👤 AUTH - Usuario autenticado:",
+        req.user.username,
+        "Admin:",
+        req.user.isAdmin
+      );
       next();
     } catch (error) {
       console.log("❌ AUTH - Error obteniendo usuario:", error.message);
