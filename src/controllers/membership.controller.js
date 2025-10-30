@@ -452,7 +452,9 @@ export const rejectMembership = async (req, res) => {
     await membership.save();
 
     console.log(
-      `❌ Membresía ${membershipId} rechazada. Razón: ${reason || "No especificada"}`
+      `❌ Membresía ${membershipId} rechazada. Razón: ${
+        reason || "No especificada"
+      }`
     );
 
     res.json({

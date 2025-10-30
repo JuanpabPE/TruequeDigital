@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authRequired } from "../middlewares/validateToken.js";
+import { isAdmin } from "../middlewares/isAdmin.js";
 import { upload } from "../middlewares/upload.js";
 import {
   getPlans,
@@ -36,9 +37,24 @@ router.post(
 // Ruta de desarrollo para auto-aprobar membresías pendientes
 router.post("/memberships/auto-approve", authRequired, autoApproveMembership);
 
-// Rutas de administración (TODO: agregar middleware de admin)
-router.get("/admin/memberships/pending", authRequired, getPendingMemberships);
-router.post("/admin/memberships/:membershipId/approve", authRequired, approveMembership);
-router.post("/admin/memberships/:membershipId/reject", authRequired, rejectMembership);
+// Rutas de administración (solo accesibles por admins)
+router.get(
+  "/admin/memberships/pending",
+  authRequired,
+  isAdmin,
+  getPendingMemberships
+);
+router.post(
+  "/admin/memberships/:membershipId/approve",
+  authRequired,
+  isAdmin,
+  approveMembership
+);
+router.post(
+  "/admin/memberships/:membershipId/reject",
+  authRequired,
+  isAdmin,
+  rejectMembership
+);
 
 export default router;

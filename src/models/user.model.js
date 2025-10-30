@@ -65,6 +65,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    // Rol de administrador
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
