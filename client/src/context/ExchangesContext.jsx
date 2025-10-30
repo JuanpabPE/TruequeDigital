@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import {
   createExchangeRequest,
   getExchangesRequest,
@@ -8,6 +8,7 @@ import {
   deleteExchangeRequest,
   updateExchangeStatusRequest,
 } from "../api/exchanges.js";
+import { useAuth } from "./AuthContext.jsx";
 
 const ExchangesContext = createContext();
 
@@ -20,11 +21,21 @@ export const useExchanges = () => {
 };
 
 export const ExchangesProvider = ({ children }) => {
+  const { user } = useAuth();
   const [exchanges, setExchanges] = useState([]);
   const [myExchanges, setMyExchanges] = useState([]);
   const [currentExchange, setCurrentExchange] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Limpiar el estado cuando cambia el usuario
+  useEffect(() => {
+    console.log("🔄 Usuario cambió, limpiando exchanges...");
+    setExchanges([]);
+    setMyExchanges([]);
+    setCurrentExchange(null);
+    setError(null);
+  }, [user?.id]);
 
   // Crear nuevo trueque
   const createExchange = async (exchangeData) => {

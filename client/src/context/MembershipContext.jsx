@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import {
   getPlansRequest,
   createMembershipRequest,
@@ -8,6 +8,7 @@ import {
   renewMembershipRequest,
   uploadPaymentProofRequest,
 } from "../api/membership";
+import { useAuth } from "./AuthContext";
 
 const MembershipContext = createContext();
 
@@ -20,11 +21,20 @@ export const useMembership = () => {
 };
 
 export const MembershipProvider = ({ children }) => {
+  const { user } = useAuth();
   const [plans, setPlans] = useState([]);
   const [activeMembership, setActiveMembership] = useState(null);
   const [membershipHistory, setMembershipHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Limpiar el estado cuando cambia el usuario
+  useEffect(() => {
+    console.log("🔄 Usuario cambió, limpiando membresías...");
+    setActiveMembership(null);
+    setMembershipHistory([]);
+    setError(null);
+  }, [user?.id]);
 
   const getPlans = async () => {
     try {

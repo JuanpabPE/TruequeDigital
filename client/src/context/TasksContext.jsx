@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import {
   createTaskRequest,
   getTasksRequest,
@@ -6,6 +6,7 @@ import {
   getTaskRequest,
   updateTaskRequest,
 } from "../api/tasks";
+import { useAuth } from "./AuthContext";
 
 const TaskContext = createContext();
 
@@ -18,7 +19,14 @@ export const useTasks = () => {
 };
 
 export function TaskProvider({ children }) {
+  const { user } = useAuth();
   const [tasks, setTasks] = useState([]);
+
+  // Limpiar el estado cuando cambia el usuario
+  useEffect(() => {
+    console.log("🔄 Usuario cambió, limpiando tasks...");
+    setTasks([]);
+  }, [user?.id]);
 
   const getTasks = async () => {
     try {
