@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authRequired } from "../middlewares/validateToken.js";
+import { upload } from "../middlewares/upload.js";
 import {
   getPlans,
   createMembership,
@@ -8,6 +9,7 @@ import {
   cancelMembership,
   renewMembership,
   autoApproveMembership,
+  uploadPaymentProof,
 } from "../controllers/membership.controller.js";
 
 const router = Router();
@@ -21,6 +23,12 @@ router.get("/memberships/active", authRequired, getActiveMembership);
 router.get("/memberships/history", authRequired, getMembershipHistory);
 router.post("/memberships/cancel", authRequired, cancelMembership);
 router.post("/memberships/renew", authRequired, renewMembership);
+router.post(
+  "/memberships/upload-proof",
+  authRequired,
+  upload.single("image"),
+  uploadPaymentProof
+);
 
 // Ruta de desarrollo para auto-aprobar membresías pendientes
 router.post("/memberships/auto-approve", authRequired, autoApproveMembership);

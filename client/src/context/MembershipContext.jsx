@@ -6,6 +6,7 @@ import {
   getMembershipHistoryRequest,
   cancelMembershipRequest,
   renewMembershipRequest,
+  uploadPaymentProofRequest,
 } from "../api/membership";
 
 const MembershipContext = createContext();
@@ -122,6 +123,23 @@ export const MembershipProvider = ({ children }) => {
     }
   };
 
+  const uploadPaymentProof = async (membershipId, file) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await uploadPaymentProofRequest(membershipId, file);
+      setActiveMembership(res.data.membership);
+      return res.data;
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message || "Error al subir comprobante";
+      setError(errorMsg);
+      throw new Error(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const clearError = () => setError(null);
 
   return (
@@ -138,6 +156,7 @@ export const MembershipProvider = ({ children }) => {
         getMembershipHistory,
         cancelMembership,
         renewMembership,
+        uploadPaymentProof,
         clearError,
       }}
     >

@@ -1,5 +1,7 @@
 import Membership from "../models/membership.model.js";
 import User from "../models/user.model.js";
+import cloudinary from "../libs/cloudinary.js";
+import { Readable } from "stream";
 
 // Obtener planes disponibles
 export const getPlans = async (req, res) => {
@@ -10,8 +12,9 @@ export const getPlans = async (req, res) => {
         name: "Plan Básico",
         price: 5,
         duration: "1 mes",
+        exchanges: 3,
         features: [
-          "Intercambios ilimitados",
+          "3 intercambios al mes",
           "Matches inteligentes semanales",
           "Verificación de identidad",
           "Soporte 24/7 por WhatsApp",
@@ -23,8 +26,9 @@ export const getPlans = async (req, res) => {
         name: "Plan Standard",
         price: 15,
         duration: "1 mes",
+        exchanges: 12,
         features: [
-          "Todo lo del Plan Básico",
+          "12 intercambios al mes",
           "Prioridad en matches",
           "Destacar 3 publicaciones",
           "Acceso anticipado a eventos",
@@ -36,8 +40,9 @@ export const getPlans = async (req, res) => {
         name: "Plan Premium",
         price: 30,
         duration: "1 mes",
+        exchanges: 30,
         features: [
-          "Todo lo del Plan Standard",
+          "30 intercambios al mes",
           "Matches ilimitados prioritarios",
           "Destacar todas las publicaciones",
           "Soporte prioritario VIP",
@@ -57,15 +62,15 @@ export const createMembership = async (req, res) => {
   try {
     const { plan, paymentMethod, paymentProof } = req.body;
 
-    // Definir precios según plan
-    const prices = {
-      basic: 5,
-      standard: 15,
-      premium: 30,
+    // Definir precios e intercambios según plan
+    const planDetails = {
+      basic: { price: 5, exchanges: 3 },
+      standard: { price: 15, exchanges: 12 },
+      premium: { price: 30, exchanges: 30 },
     };
 
-    const price = prices[plan];
-    if (!price) {
+    const details = planDetails[plan];
+    if (!details) {
       return res.status(400).json({ message: "Plan inválido" });
     }
 
@@ -77,11 +82,13 @@ export const createMembership = async (req, res) => {
     const membership = new Membership({
       user: req.user.id,
       plan,
-      price,
+      price: details.price,
+      exchangesAllowed: details.exchanges,
+      exchangesUsed: 0,
       startDate,
       endDate,
-      status: "active",
-      paymentMethod: paymentMethod || "whatsapp",
+      status: "pending", // Pendiente hasta que se suba el comprobante
+      paymentMethod: paymentMethod || "yape",
       paymentProof: paymentProof || "",
     });
 
@@ -269,5 +276,84 @@ export const autoApproveMembership = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// Función helper para convertir buffer a stream
+const bufferToStream = (buffer) => {
+  const readable = new Readable({
+    read() {
+      this.push(buffer);
+      this.push(null);
+    },
+  });
+  return readable;
+};
+
+// Subir comprobante de pago
+export const uploadPaymentProof = async (req, res) => {
+  try {
+    const { membershipId } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No se recibió ninguna imagen" });
+    }
+
+    if (!membershipId) {
+      return res.status(400).json({ message: "membershipId es requerido" });
+    }
+
+    // Buscar la membresía
+    const membership = await Membership.findOne({
+      _id: membershipId,
+      user: req.user.id,
+    });
+
+    if (!membership) {
+      return res.status(404).json({ message: "Membresía no encontrada" });
+    }
+
+    // Subir a Cloudinary usando stream
+    const uploadPromise = new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "trueque-digital/payment-proofs",
+          transformation: [
+            { width: 1200, height: 1200, crop: "limit" },
+            { quality: "auto" },
+          ],
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      bufferToStream(req.file.buffer).pipe(uploadStream);
+    });
+
+    const result = await uploadPromise;
+
+    // Actualizar membresía con el comprobante
+    membership.paymentProof = result.secure_url;
+    membership.status = "active"; // Activar automáticamente por ahora
+    await membership.save();
+
+    // Actualizar usuario con la membresía activa
+    await User.findByIdAndUpdate(req.user.id, {
+      activeMembership: membership._id,
+    });
+
+    res.json({
+      message: "Comprobante subido exitosamente",
+      url: result.secure_url,
+      membership,
+    });
+  } catch (error) {
+    console.error("Error uploading payment proof:", error);
+    res.status(500).json({
+      message: "Error al subir el comprobante",
+      error: error.message,
+    });
   }
 };

@@ -15,3 +15,14 @@ export const cancelMembershipRequest = () => axios.post("/memberships/cancel");
 
 export const renewMembershipRequest = (paymentData) =>
   axios.post("/memberships/renew", paymentData);
+
+export const uploadPaymentProofRequest = (membershipId, file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("membershipId", membershipId);
+  return axios.post("/memberships/upload-proof", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};

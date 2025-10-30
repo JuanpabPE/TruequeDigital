@@ -17,6 +17,15 @@ const membershipSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    exchangesAllowed: {
+      type: Number,
+      required: true,
+      default: 3, // básico: 3, standard: 12, premium: 30
+    },
+    exchangesUsed: {
+      type: Number,
+      default: 0,
+    },
     startDate: {
       type: Date,
       required: true,
@@ -28,8 +37,8 @@ const membershipSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "expired", "cancelled"],
-      default: "active",
+      enum: ["pending", "active", "expired", "cancelled"],
+      default: "pending",
     },
     paymentMethod: {
       type: String,
@@ -53,6 +62,20 @@ const membershipSchema = new mongoose.Schema(
 // Método para verificar si la membresía está activa
 membershipSchema.methods.isActive = function () {
   return this.status === "active" && this.endDate > new Date();
+};
+
+// Método para verificar si aún tiene intercambios disponibles
+membershipSchema.methods.hasExchangesAvailable = function () {
+  return this.exchangesUsed < this.exchangesAllowed;
+};
+
+// Método para usar un intercambio
+membershipSchema.methods.useExchange = function () {
+  if (this.hasExchangesAvailable()) {
+    this.exchangesUsed += 1;
+    return true;
+  }
+  return false;
 };
 
 // Método estático para calcular fecha de fin según el plan
