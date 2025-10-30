@@ -1,60 +1,49 @@
-import Membership from "../models/membership.model.js";
+﻿import Membership from "../models/membership.model.js";
 import User from "../models/user.model.js";
 
 export const requireActiveMembership = async (req, res, next) => {
   try {
-    console.log("🔍 Checking membership for user:", req.user?.id);
+    console.log("DEBUG - req.user:", JSON.stringify(req.user));
+    console.log("DEBUG - isAdmin:", req.user?.isAdmin, "Type:", typeof req.user?.isAdmin);
+
+    // ADMIN BYPASS: Los administradores no necesitan membresa
+    if (req.user && req.user.isAdmin === true) {
+      console.log("ADMIN BYPASS:", req.user.username);
+      return next();
+    }
+
+    console.log("Checking membership for user:", req.user?.id);
 
     if (!req.user || !req.user.id) {
-      console.error("❌ No user in request");
+      console.error("No user in request");
       return res.status(401).json({
         message: "Usuario no autenticado",
       });
     }
 
-    // Verificar si el usuario tiene una membresía activa
     const user = await User.findById(req.user.id).populate("activeMembership");
 
     if (!user) {
-      console.error("❌ User not found:", req.user.id);
+      console.error("User not found:", req.user.id);
       return res.status(404).json({
         message: "Usuario no encontrado",
       });
     }
 
-    console.log("👤 User found:", user.username, "Membership:", user.activeMembership?.status);
+    console.log("User found:", user.username, "Membership:", user.activeMembership?.status);
 
     if (!user.activeMembership) {
-      console.log("❌ No active membership for user:", user.username);
-      
-      // Buscar si tiene alguna membresía activa que no esté enlazada
-      const activeMembership = await Membership.findOne({
-        user: user._id,
-        status: "active",
-        endDate: { $gt: new Date() },
-      });
-
-      if (activeMembership) {
-        console.log("✅ Found unlinked membership, linking now...");
-        user.activeMembership = activeMembership._id;
-        await user.save();
-        req.membership = activeMembership;
-        console.log("✅ Membership linked successfully");
-        return next();
-      }
-
+      console.log("No active membership for user:", user.username);
       return res.status(403).json({
         message: "Necesitas una membresía activa para realizar esta acción",
         requiresMembership: true,
       });
     }
 
-    // Verificar si la membresía no está expirada
     const membership = user.activeMembership;
 
     if (!membership.isActive()) {
-      console.log("❌ Membership expired");
-      // Actualizar estado
+      console.log("Membership expired");
       membership.status = "expired";
       await membership.save();
 
@@ -68,13 +57,12 @@ export const requireActiveMembership = async (req, res, next) => {
       });
     }
 
-    console.log("✅ Membership valid");
-    // Adjuntar membresía a la request
+    console.log("Membership valid");
     req.membership = membership;
     next();
   } catch (error) {
-    console.error("❌ Error in requireActiveMembership:", error);
-    console.error("❌ Error stack:", error.stack);
+    console.error("Error in requireActiveMembership:", error);
+    console.error("Error stack:", error.stack);
     res.status(500).json({ message: error.message, stack: error.stack });
   }
 };
